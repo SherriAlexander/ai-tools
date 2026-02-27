@@ -1,0 +1,76 @@
+    {
+        "servers": {
+            "com.atlassian/atlassian-mcp-server": {
+                "type": "http",
+                "url": "https://mcp.atlassian.com/v1/mcp",
+                "gallery": "https://api.mcp.github.com",
+                "version": "1.1.1"
+            },
+            "figma": {
+                "url": "https://mcp.figma.com/mcp",
+                "type": "http",
+                "env": {
+                    "FIGMA_ACCESS_TOKEN": "${input:figma-token}"
+                }
+            },
+            "github": {
+                "command": "docker",
+                "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "-e",
+                    "GITHUB_PERSONAL_ACCESS_TOKEN",
+                    "ghcr.io/github/github-mcp-server"
+                ],
+                "env": {
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+                }
+            },
+            "sitecore-search": {
+                "command": "npx",
+                "args": [
+                    "-y",
+                    "@markstiles/sitecore-search-mcp"
+                ],
+                "env": {
+                    "SITECORE_DOMAIN_ID": "${input:sitecore-domain-id}",
+                    "SITECORE_CLIENT_KEY": "${input:sitecore-client-key}",
+                    "SITECORE_API_KEY": "${input:sitecore-api-key}",
+                    "SITECORE_SEARCH_BASE_URL": "https://discover.sitecorecloud.io",
+                    "SITECORE_INGESTION_BASE_URL": "https://discover.sitecorecloud.io",
+                    "SITECORE_EVENTS_BASE_URL": "https://discover.sitecorecloud.io"
+                }
+            }
+        },
+        "inputs": [
+            {
+                "type": "promptString",
+                "id": "github_token",
+                "description": "GitHub Personal Access Token",
+                "password": true
+            },
+            {
+                "type": "promptString",
+                "id": "figma-token",
+                "description": "Figma Access Token",
+                "password": true
+            },
+            {
+                "type": "promptString",
+                "id": "sitecore-domain-id",
+                "description": "Sitecore Domain ID",
+            },
+            {
+                "type": "promptString",
+                "id": "sitecore-client-key",
+                "description": "Sitecore Client Key",
+            },
+            {
+                "type": "promptString",
+                "id": "sitecore-api-key",
+                "description": "Sitecore API Key",
+                "password": true
+            }
+        ]
+    }
