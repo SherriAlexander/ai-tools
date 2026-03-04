@@ -5,13 +5,18 @@
 
 This repository contains a collection of modular "skills" for AI agents, designed to enhance the capabilities of agentic systems such as Github CoPilot. Each skill is a focused, reusable prompt or workflow that can be invoked to perform a specific type of reasoning, research, or code manipulation task.
 
-Once installed, skills can be used by running a "slash command" (like `/finalize`) in your CoPilot agent chat.
-
-Skills with names starting in `cc-` are specific to Claude Code only.
+Once installed, skills can be used by running a "slash command" (like `/finalize`) in your AI agent chat.
 
 These skills are a starting point!  Ideally, we want to customize and update these skills to suit our needs, and create new ones to share here.
 
 Have a new skill to share?  Make a pull request!
+
+### Claude Code vs CoPilot
+
+Skills with names starting in `cc-` are specific to Claude Code only.
+Example:  `skills/cc-always-allow`
+
+For cross-compatibility with the vast majority of skills that are created for Claude Code, 
 
 ## Current List of Skills
 
@@ -23,6 +28,7 @@ Have a new skill to share?  Make a pull request!
 - `/deepstack`: Generate a comprehensive deep research prompt for a provided topic (like performance, testing, accessibility, security...) tailored to the current project's technology stack.
 - `/finalize`: Clean up recent feature or refactor work by removing false starts, experimental remnants, and consolidating logic.
 - `/fix-ghactions`: Check GitHub Actions and fix any failures.
+- `/init-conventions`: Standard workflow for all `/init-*` commands.
 - `/refine-idea`: A thinking partner, to help you refine an incomplete idea into a clear spec.
 - `/test`: Detect the test framework, run the test suite, and fix any failures.
 - `/tests-new`: Identify and add tests for recent code changes.
