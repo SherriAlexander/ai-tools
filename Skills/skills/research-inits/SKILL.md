@@ -17,16 +17,14 @@ Research specified init commands to find updated best practices, new features, o
 ### Phase 1: Parse Arguments
 
 Extract the init names from `$ARGUMENTS`. For each name:
-1. Verify that at least one of the following exists, depending on the agent's context:
-   - `~/.claude/commands/init-{name}.md` for Claude Code
-   - `~/.copilot/skills/init-{name}/SKILL.md` for GitHub Copilot
+1. Verify that the following exists: `~/.copilot/skills/init-{name}/SKILL.md`
 2. If not found, report which inits don't exist and skip them
 
 ### Phase 2: Research Each Init
 
 For each valid init name, sequentially:
 
-1. **Read the current init file** at `~/.claude/commands/init-{name}.md` or `~/.copilot/skills/init-{name}/SKILL.md`
+1. **Read the current init file** at `~/.copilot/skills/init-{name}/SKILL.md`
 2. **Research the web** using WebSearch for:
    - Official documentation updates (latest version features, breaking changes)
    - Best practices from official guides
@@ -46,7 +44,7 @@ For each valid init name, sequentially:
 ```
 Research updates for the `/init-{name}` command.
 
-Current content is at: `~/.claude/commands/init-{name}.md` or `~/.copilot/skills/init-{name}/SKILL.md`
+Current content is at: `~/.copilot/skills/init-{name}/SKILL.md`
 
 Read the current init file first, then search the web for:
 1. Latest {Framework} documentation and release notes (v{X}.x if known)
@@ -99,7 +97,7 @@ If user confirms, apply the updates directly to the init files.
 
 ### Phase 5: Compress Updated Inits
 
-After applying updates to init files, run `/compress-init {name}` for each init that was updated. This minimizes token usage while preserving all the new content.
+After applying updates to init files, run `/compress-init {name}` or `/compact` for each init that was updated. This minimizes token usage while preserving all the new content.
 
 Do this automatically after updates are applied — no need to ask the user.
 
@@ -108,7 +106,7 @@ Do this automatically after updates are applied — no need to ask the user.
 ```
 User: /research-inits tauri inertia
 
-Claude: Researching 2 init commands...
+Copilot: Researching 2 init commands...
 
 [Researches tauri, then inertia]
 
@@ -147,7 +145,7 @@ To help agents find the right documentation:
 | tauri | v2.tauri.app, github.com/tauri-apps/tauri/releases |
 | inertia | inertiajs.com, github.com/inertiajs releases |
 | laravel | laravel.com/docs, Laravel News |
-| drupal | https://www.drupal.org/documentation, Drupal News |
+| drupal | www.drupal.org/documentation, Drupal News |
 | react | react.dev, React blog |
 | vue | vuejs.org, Vue blog |
 | livewire | livewire.laravel.com, Livewire releases |
