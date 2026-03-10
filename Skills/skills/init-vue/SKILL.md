@@ -1,3 +1,8 @@
+---
+name: init-vue
+description: Initialize Vue 3 + TypeScript best practices
+---
+
 # Initialize Vue Best Practices
 
 Add Vue 3 + TypeScript best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**

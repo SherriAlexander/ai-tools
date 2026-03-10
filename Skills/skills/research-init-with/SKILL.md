@@ -1,3 +1,8 @@
+---
+name: research-init-with
+description: Research URL for init guidelines and offer to update or add guidelines
+---
+
 # Research Init From URL
 
 Research URL for init guidelines.

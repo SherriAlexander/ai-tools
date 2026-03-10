@@ -1,3 +1,8 @@
+---
+name: update-init
+description: Update existing /init-* skill with new content
+---
+
 # Update Init Skill
 
 Update existing init skill.

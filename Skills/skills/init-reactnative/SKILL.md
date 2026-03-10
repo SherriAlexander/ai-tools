@@ -1,3 +1,8 @@
+---
+name: init-reactnative
+description: Initialize React Native 0.76+ best practices
+---
+
 # Initialize React Native Best Practices
 
 Add React Native 0.76+ best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**

@@ -1,3 +1,8 @@
+---
+name: init-tailwind
+description: Initialize Tailwind CSS v4 best practices
+---
+
 # Initialize Tailwind Best Practices
 
 Add Tailwind CSS v4 best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**

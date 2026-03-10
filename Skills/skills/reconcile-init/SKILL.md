@@ -1,3 +1,8 @@
+---
+name: reconcile-init
+description: Reconcile local project rules with master init commands
+---
+
 # Reconcile Init Command
 
 Reconcile local project rules with the master init commands. Performs a two-way comparison and synchronizes differences.

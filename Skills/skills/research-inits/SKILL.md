@@ -1,3 +1,8 @@
+---
+name: research-inits
+description: Research init commands for updated best practices
+---
+
 # Research Init Commands for Updates
 
 Research frameworks for best practices.

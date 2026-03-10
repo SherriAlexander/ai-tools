@@ -1,6 +1,11 @@
+---
+name: init-react
+description: Initialize React 19 + TypeScript best practices
+---
+
 # Initialize React Best Practices
 
-Add React 19 + TypeScript + Base UI best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**
+Add React 19 + TypeScript best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**
 
 ## Target File
 

@@ -1,3 +1,8 @@
+---
+name: init-react-animation
+description: Initialize React animation and simulation best practices
+---
+
 # Initialize React Animation Best Practices
 
 Add React animation and simulation best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**

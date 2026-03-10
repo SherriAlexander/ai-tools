@@ -1,3 +1,8 @@
+---
+name: add-init
+description: Create a new /init-* command
+---
+
 # Add New Init Command
 
 Create a new /init-* command.

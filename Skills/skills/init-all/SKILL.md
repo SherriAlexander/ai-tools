@@ -1,3 +1,8 @@
+---
+name: init-all
+description: Run all applicable /init-* commands
+---
+
 # Initialize All Applicable Best Practices
 
 Run all applicable /init-* commands.

@@ -1,3 +1,8 @@
+---
+name: init-conventions
+description: Standard init workflow for all /init-* commands
+---
+
 # Standard Init Workflow
 
 This document defines the standard workflow for all `/init-*` commands. Individual init commands should reference this instead of duplicating these instructions.

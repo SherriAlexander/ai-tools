@@ -1,3 +1,8 @@
+---
+name: init-dockerfile
+description: Initialize Dockerfile best practices
+---
+
 # Initialize Dockerfile Best Practices
 
 Add Docker/Dockerfile best practices. **Follow `~/.copilot/skills/init-conventions/SKILL.md` for standard file handling.**
