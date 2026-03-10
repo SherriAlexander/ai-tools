@@ -173,11 +173,11 @@ If user confirms:
    ```
 
 5. **Run the built-in `/init` command**
-   - This sets up the foundational copilot-instructions.md file
+   - This sets up the foundational `.github/copilot-instructions.md` file 
    - Running after framework inits means `/init` can be aware of what's in `.github/instructions/`
-   - Avoids duplicate content between copilot-instructions.md and framework-specific rules
+   - Avoids duplicate content between `.github/copilot-instructions.md` and framework-specific rules
 
-6. **Run `/agents`** to sync copilot-instructions.md to CLAUDE.md and AGENTS.md and GEMINI.md
+6. **Run `/agents`** to sync `.github/copilot-instructions.md` to CLAUDE.md and AGENTS.md and GEMINI.md
    - This ensures other AI assistants have the same guidelines
 
 7. **Report completion with count**: "Ran X init commands, created X rule files, removed Y stale files, synced to CLAUDE.md and AGENTS.md and GEMINI.md"
@@ -189,7 +189,7 @@ If user confirms:
 After initialization:
 
 - Remind user to review the added content
-- Suggest customizing project-specific sections in copilot-instructions.md
+- Suggest customizing project-specific sections in `.github/copilot-instructions.md`
 - Note any frameworks detected but not having an init command
 
 ## Notes
