@@ -75,11 +75,11 @@ convert the jsx to twig and save it in the same folder as the yml file. The file
 
 ### Phase 4: Create the component's css file
 
-1. Determine if the component is using tailwinds or custom css
+1. Determine if the component is using Tailwinds CSS or custom css
 2. Let the user know which is being used
 3. **If the repository's instructions don't specify which to use, ask the user which they want to use.**
 
-- **if using tailswinds** ask if they want to
+- **if using tailswind css** ask if they want to
   - leave as is
   - convert to BEM (reference any instructions in the repository about css structure and naming conventions)
   - something else
