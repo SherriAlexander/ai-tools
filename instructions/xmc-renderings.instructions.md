@@ -1,3 +1,9 @@
+---
+name: 'XMC Sitecore Rendering Creation Instructions'
+description: 'Instructions for creating Sitecore renderings using SPE scripts.'
+applyTo: '**/*.ps1'
+---
+
 # Sitecore Rendering Creation
 A sitecore rendering is a reusable component that can be added to pages within the Sitecore content management system. When creating a Sitecore rendering item, it is essential to define at least the rendering definition which will represent the entity on the page where the user interface, design and interaction are built. There are several other key elements that are optional and may be required to ensure that the rendering functions correctly and meets the rendering requirements. The following sections outline the variables and data structures you must define and pre-existing functions you may use to create a Sitecore rendering using Sitecore Powershell Extension (SPE) scripts.
 

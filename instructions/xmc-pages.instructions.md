@@ -1,3 +1,9 @@
+---
+name: 'XMC Sitecore Page Creation Instructions'
+description: 'Instructions for creating Sitecore pages using SPE scripts.'
+applyTo: '**/*.ps1'
+---
+
 # Sitecore Page Creation
 A sitecore page is a primary data element that represents a website page and will be used to define the structure of a URL. These pages can be added in a tree structure within the Sitecore content management system. When creating a Sitecore page item, it is essential to define at least the page definition which will represent the where the user interaction begins. There are several key elements to ensure that the page functions correctly and meets the page requirements. The following sections outline the variables and data structures you must define and pre-existing functions you may use to create a Sitecore rendering using Sitecore Powershell Extension (SPE) scripts.
 

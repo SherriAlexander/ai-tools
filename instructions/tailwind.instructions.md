@@ -1,3 +1,9 @@
+---
+name: 'VXA Next.js Tailwind CSS Architecture'
+description: 'Instructions for the Tailwind v4 CSS architecture in a VXA Next.js project.'
+applyTo: '**/*.css'
+---
+
 # Next.js Tailwind CSS Architecture
 
 This document explains the Tailwind v4 CSS-only configuration used in the VXA project, including the structure of the `/styles` directory and how each piece fits together.

@@ -1,7 +1,10 @@
+---
+name: 'VXA Next.js Props File Generation'
+description: 'Props in a VXA Next.js project follow the three-part pattern (Params, Fields, Props). This pattern should be followed for all components to ensure consistency unless it is specified to be a sub-component or part of a larger component, in that case use a simpler props structure. Params, props and fields may not be necessary.'
+applyTo: '**/*.props.ts'
+---
 
-
-# Next.js Props File Generation
-Props follow the three-part pattern (Params, Fields, Props). This pattern should be followed for all components to ensure consistency unless it is specified to be a sub-component or part of a larger component, in that case use a simpler props structure. Params, props and fields may not be necessary.
+# VXA Next.js Props File Generation
 
 ## Import Statements
 Not all imports are required for every props file, but the most commonly used imports are shown below. Decide which imports are necessary based on the fields and parameters defined for the component.

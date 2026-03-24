@@ -1,3 +1,9 @@
+---
+name: 'Jira Ticket Instructions'
+description: 'Reference for extracting requirements from Jira feature tickets in greenfield projects. Focuses on interpreting data tables for component and page creation, determining field types, and understanding component variants and containers.'
+applyTo: '**'
+---
+
 # JIRA TICKETS
 Jira is a system that organizes a project based on a project code and within that project work and requirements are defined in tickets. There are a large variety of Jira ticket types. You are to focus on tickets with a feature type and ignore bug, task and uat type tickets. Within the feature tickets there will still be a variety of sub-topics that define enumerations, taxonomies, page types, component types and integrations with 3rd party APIs. 
 
