@@ -1,3 +1,9 @@
+---
+name: 'VXA Next.js Tailwind CSS Architecture'
+description: 'Instructions for the Tailwind v4 CSS architecture in a VXA Next.js project.'
+applyTo: '**/*.css'
+---
+
 # Next.js Tailwind CSS Architecture
 
 This document explains the Tailwind v4 CSS-only configuration used in the VXA project, including the structure of the `/styles` directory and how each piece fits together.
@@ -184,6 +190,6 @@ Note: brand-a, brand-b are theme names derived from the Figma Mode used to defin
 
 ## Related Documentation
 
-- [figma.md](./figma.md) - Complete design token reference and Figma integration guide
-- [nextjs-guidelines.md](./nextjs-guidelines.md) - Component generation guidelines
-- [nextjs-file-variant.md](./nextjs-file-variant.md) - Component styling patterns
+- [figma.instructions.md](./figma.instructions.md) - Complete design token reference and Figma integration guide
+- [nextjs-guidelines.instructions.md](./nextjs-guidelines.instructions.md) - Component generation guidelines
+- [nextjs-file-variant.instructions.md](./nextjs-file-variant.instructions.md) - Component styling patterns

@@ -1,3 +1,9 @@
+---
+name: 'Refactor Component Dictionary Usage to useTranslate Hook'
+description: 'Instructions for refactoring a component from using a dictionary file to the new useTranslate hook pattern in a VXA Next.js project.'
+applyTo: '**/*.tsx, **/*.dictionary.ts'
+---
+
 # Refactor Guide: Migrating Component Dictionary Usage to useTranslate Hook
 
 This guide outlines the step-by-step process for refactoring component dictionary usage to the new `useTranslate` hook pattern. Follow these instructions for **one component at a time** to ensure safe, testable, and incremental changes.

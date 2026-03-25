@@ -1,5 +1,10 @@
-# Next.js Utilities File 
-Create helper functions for accessing deeply nested fields to reduce repetition. The decision to create a utility function should be based on the complexity of the data model and the frequency of access patterns. If multiple components or variants require similar access patterns, a utility function can help centralize the logic and improve maintainability.
+---
+name: 'VXA Next.js Utility Helper Functions'
+description: 'Create helper functions for accessing deeply nested fields to reduce repetition. The decision to create a utility function should be based on the complexity of the data model and the frequency of access patterns. If multiple components or variants require similar access patterns, a utility function can help centralize the logic and improve maintainability.'
+applyTo: '**/*.utils.ts'
+---
+
+# VXA Next.js Utilities File 
 
 ## Utility Function Patterns
 
