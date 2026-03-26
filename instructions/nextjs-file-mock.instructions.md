@@ -1,6 +1,10 @@
+---
+name: 'VXA Next.js Mock File Generation'
+description: 'Instructions for generating mock data files in a VXA Next.js project. The mock file should reference the props file and use the props object to provide example data for the component to run.'
+applyTo: '**/*.mock.tsx'
+---
 
-# Next.js Mock File Generation
-The mock file should reference the props file and use the props object to provide example data for the component to run.
+# VXA Next.js Mock File Generation
 
 ## Best Practices for Mock Data Values
 - Always use UUID zeros for mock rendering.uid: '{00000000-0000-0000-0000-000000000000}'

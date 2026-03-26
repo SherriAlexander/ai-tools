@@ -1,5 +1,10 @@
+---
+name: 'VXA Next.js Variant File Generation'
+description: 'Instructions for generating variant files in a VXA Next.js project. Variant files define the core functionality and structure of a component, including its props, state, and behavior.'
+applyTo: '**/*.tsx'
+---
 
-# Next.js Variant File Generation
+# VXA Next.js Variant File Generation
 
 ## Heading Statements
 Specific types of components will require a heading statement indicating it that it will have javascript that should run in the client environment. This occurs when the component uses React hooks (useState, useEffect, useId, etc.), Event handlers (onClick, onSubmit, etc.), Browser-only APIs, Interactive components, or Third-party libraries that require client-side JS. If any of these cases are indicated, the file must include the 'use client' directive at the top of the file.

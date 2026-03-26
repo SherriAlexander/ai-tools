@@ -1,4 +1,10 @@
-# Next.js Main Component File Generation
+---
+name: 'VXA Next.js Main Component File Generation'
+description: 'Instructions for generating main component files in a VXA Next.js project. Main component files control which variant to display, the props, dictionary and component state.'
+applyTo: '**/*.tsx'
+---
+
+# VXA Next.js Main Component File Generation
 Main components are where the variant references are governed. This is also the primary export interface for the consumers of the component. The names here are what are surfaced to the Sitecore system. These files are less about the detailed structure and interaction of the fields and more about which variant to display, when to display and what to display. The props, dictionary and component state are managed in this file. 
 
 The component index will export each of the component variants. The main component should export as the `Default` function with a property for isPageEditing. Any additional variants should be exported as named exports.

@@ -1,5 +1,10 @@
-# Next.js Hooks File Generation
-For more complex components, consider creating custom hooks to validate fields and prepare them for rendering. You will need to choose the appropriate pattern based on whether you are using Layout Service or GraphQL data sources.
+---
+name: 'VXA Next.js Hooks File Generation'
+description: 'Instructions for generating custom hooks in a Next.js project.  Hooks should be considered for more complex components to validate fields and prepare them for rendering. You will need to choose the appropriate pattern based on whether you are using Layout Service or GraphQL data sources.'
+applyTo: '**/*.tsx'
+---
+
+# VXA Next.js Hooks File Generation
 
 ## Hook Definition Patterns
 

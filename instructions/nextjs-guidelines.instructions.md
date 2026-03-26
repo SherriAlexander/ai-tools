@@ -1,4 +1,10 @@
-# Next.js Component File Generation Guidelines
+---
+name: 'VXA Next.js Component File Generation Guidelines'
+description: 'General guidelines for generating Next.js component files in a VXA project.'
+applyTo: '**/*.tsx'
+---
+
+# VXA Next.js Component File Generation Guidelines
 Components should always use TypeScript formatting and typing.  Below are the patterns and order that must be followed so that styling, theming, error handling, and Storybook integration are consistent across all components.
 
 When generating Next.js components, the following guidelines must be adhered to for imports, styling, dictionary files, props files, mock files, variant files, main component files, and Storybook files.

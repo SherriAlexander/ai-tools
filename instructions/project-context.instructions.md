@@ -1,3 +1,9 @@
+---
+name: 'VXA Next.js Project Context'
+description: 'Core instructions for GitHub Copilot to ensure consistent, high-quality code generation in a VXA Next.js project.'
+applyTo: '**'
+---
+
 # Project Context
 This file contains core instructions for GitHub Copilot to ensure consistent, high-quality code generation that aligns with our company's development standards. This is part of an instruction set to apply globally across all Copilot interactions.
 

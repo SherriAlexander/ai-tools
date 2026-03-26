@@ -1,6 +1,9 @@
+---
+name: 'VXA Figma Design System Reference'
+description: 'Reference for mapping Figma design tokens to CSS variables and Tailwind utility classes in the Velir Experience Accelerator (VXA) project. Use this reference when creating or modifying components to ensure consistency with the design system.'
+applyTo: '**/*.css, **/*.scss'
+---
 # Figma Design System for a Velir Experience Accelerator (VXA) Project
-
-This document serves as a reference for mapping Figma design tokens to CSS variables and Tailwind utility classes in the Velir Experience Accelerator (VXA) project. Use this reference when creating or modifying components to ensure consistency with the design system.
 
 The VXA design system implements a token-based approach where:
 

@@ -1,5 +1,10 @@
-# Next.js Storybook File Generation
-Stories reference variant component directly. Mock data is imported from a separate mock data file. Each story represents a different variant of the component, allowing for easy visualization and testing of various states and themes.
+---
+name: 'VXA Next.js Storybook File Generation'
+description: 'Stories in a VXA Next.js project reference variant component directly. Mock data is imported from a separate mock data file. Each story represents a different variant of the component, allowing for easy visualization and testing of various states and themes.'
+applyTo: '**/*.stories.tsx'
+---
+
+# VXA Next.js Storybook File Generation
 
 ## Import Statements
 
