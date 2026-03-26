@@ -6,8 +6,6 @@ context: fork
 
 # Dead Code Audit
 
-Detect unused exports, unreachable code, orphaned files, and stale feature flags.
-
 ## The Core Problem
 
 Dead code degrades comprehensibility and introduces maintenance risk. Research (Romano et al., IEEE TSE 2020) found dead code persists for many commits before removal and is "rarely revived." It confuses developers, increases bundle size, and creates false dependencies.

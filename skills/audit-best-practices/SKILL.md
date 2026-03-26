@@ -6,8 +6,6 @@ context: fork
 
 # Audit Best Practices
 
-Analyze a codebase and audit for best practices and idiomatic usage of detected languages and frameworks.
-
 ## Workflow
 
 ### Phase 1: Stack Detection

@@ -6,8 +6,6 @@ context: fork
 
 # Errors Audit
 
-Detect error handling inconsistencies, anti-patterns, and silent failures.
-
 ## The Core Problem
 
 Error handling inconsistency creates unpredictable failure modes and debugging nightmares. "Catch and Do Nothing" is among the most common anti-patterns, silently swallowing errors that should surface.
