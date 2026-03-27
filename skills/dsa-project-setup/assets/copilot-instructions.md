@@ -23,14 +23,25 @@ When generating Jira tickets from Figma designs, always follow the workflow defi
 - Functional Requirements must be ordered numbered lists, not prose or bullets.
 - Responsive design sections must use Large / Medium / Small viewport labels — never phone/tablet/desktop.
 
-### 3. Model Recommendations
+### 3. Living Ticket Instructions
+
+The file `.github/instructions/generate-tickets.instructions.md` is a living document. Update it automatically — without asking — whenever the DSA:
+
+- Corrects or adjusts a ticket that was generated (e.g., rewords a requirement, changes a section, removes a field)
+- Expresses a preference about how tickets should be written (e.g., "always include X", "don't include Y", "use this format instead")
+- Approves a modified ticket — treat the approved version as the new standard
+- Repeatedly makes the same type of change across multiple tickets — recognize the pattern and codify it
+
+Update the relevant part of `generate-tickets.instructions.md` to reflect the new preference. After updating, briefly note what changed (e.g., "Updated the Authoring Considerations guidance to always call out SXA field-starring limitation").
+
+### 4. Model Recommendations
 
 Match model capability to task complexity:
 - If a task would clearly benefit from deeper reasoning (architecture decisions, complex debugging, evaluating tradeoffs), recommend switching to a more powerful model within the current AI brand (e.g., Claude Sonnet → Claude Opus).
 - If a task is straightforward and a lighter model would suffice, recommend switching down to conserve tokens.
 - Always recommend within the same model brand first.
 
-### 4. Standards and Conventions
+### 5. Standards and Conventions
 
 Follow established conventions for naming, organizing, and structuring files:
 - `README.md` — root level, brief and high-level
