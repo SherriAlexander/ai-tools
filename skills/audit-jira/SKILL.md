@@ -1,6 +1,7 @@
 ---
 name: audit-jira
 description: Verify that recent work satisfies all requirements, technical specs, and acceptance criteria defined in a Jira ticket. Use when wrapping up a feature, preparing for a PR, or doing a pre-QA completeness check. Accepts a Jira ticket ID or URL as an argument (e.g. "PROJ-123" or a full Jira URL).
+argument-hint: "PROJ-123"
 ---
 
 # Jira Ticket Verification
@@ -20,9 +21,12 @@ Retrieve the full ticket content. Try in this order:
 1. **MCP Jira tool** — if a Jira MCP server is available in the current workspace, use it to fetch the ticket by ID.
    - If no Jira MCP server is found, offer to help the user install one before continuing:
      > "No Jira MCP server was detected in your workspace. Would you like help setting one up? The [Atlassian MCP server](https://github.com/atlassian/mcp-atlassian) is the official option and supports Jira Cloud and Data Center. I can walk you through installing and configuring it."
-   - If the user declines, fall through to the next option.
-2. **fetch_webpage** — if a URL was provided, fetch the page directly.
-3. **Ask the user** — if neither option is available, ask the user to paste the ticket content or share a readable export.
+   - If the user declines or the MCP server is unavailable, fall through to the next option.
+2. **fetch_webpage** — if a full Jira URL was provided, attempt to fetch the page directly to retrieve ticket content.
+3. **Ask the user** — if neither option above succeeded, ask the user to paste the full ticket content (description, acceptance criteria, technical specs) directly into the chat.
+
+> **HARD STOP — No Synthesis Allowed**: Do not proceed to Phase 2 until real ticket content has been retrieved from one of the three sources above. Never infer, guess, or synthesize ticket requirements from git history, branch names, file contents, or conversation context. If all three options have been exhausted and no ticket content is available, stop and tell the user:
+> "I wasn't able to retrieve the Jira ticket content. Please paste the ticket description, acceptance criteria, and any technical specs directly into the chat so I can verify your work against the actual requirements."
 
 Once retrieved, confirm the ticket ID and title back to the user before proceeding.
 
