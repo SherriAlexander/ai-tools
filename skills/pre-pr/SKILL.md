@@ -14,6 +14,8 @@ The `$ARGUMENT` is the Jira ticket identifier — either a ticket ID (e.g. `PROJ
 
 An optional `--skip-jira` flag may be appended to bypass the `audit-jira` completeness gate (e.g. `PROJ-123 --skip-jira`). Use this when the audit result is known to be unreliable or the user has confirmed the ticket requirements are met. When the flag is present, skip Phase 1 entirely, note the bypass in the Phase 4 summary, and proceed directly to Phase 2.
 
+An optional `--hook` flag signals that the skill is being invoked by an automated caller (e.g. Husky, a git hook). When present, auto-select **Quick** depth in Phase 2 without prompting.
+
 ---
 
 ## Phase 0: Scope Changed Files
@@ -21,16 +23,71 @@ An optional `--skip-jira` flag may be appended to bypass the `audit-jira` comple
 Run the following to identify files changed in this branch:
 
 ```bash
-git diff --name-only origin/main
+git diff --name-only origin/main...HEAD
 ```
 
-If `origin/main` fails, try in order: `main`, `master`, `develop`. Use whichever succeeds first.
+If `origin/main` fails, try in order: `main...HEAD`, `master...HEAD`, `develop...HEAD`. Use whichever succeeds first.
 
 If git is unavailable or returns no files:
 - **Warn the user**: "No changed files detected — audits will run against the full codebase. This costs significantly more tokens."
-- Continue unscoped.
+- Ask: "Do you want to continue unscoped, or cancel?"
+  - If **cancel** → stop with: "Cancelled. Re-run `/pre-pr` from a branch with detectable changes."
+  - If **continue** → skip Phase 0b and proceed to Phase 1. Record scope as `full codebase (no changed files detected)`.
 
-Capture the changed file list. Pass it to every audit in Phase 3.
+Capture the changed file list. Carry it into Phase 0b.
+
+---
+
+## Phase 0b: Confirm Scope
+
+Display the detected file count and list:
+
+- If ≤20 files, show all of them.
+- If >20 files, show the first 20 and append:
+  > … and N more files — reply "show all" to see the full list.
+  
+  If the user replies "show all", display the complete list, then re-present the scope options below.
+
+**Always pass the full file list to audits regardless of what is displayed.**
+
+Then ask the user how to proceed:
+
+> **How would you like to scope the audits?**
+> - **Proceed with all N files** — continue with the detected list
+> - **Scope to recent commits** — narrow to files changed in a specific commit range
+> - **Change base branch** — diff against a different branch or ref
+> - **Specify files manually** — enter paths or glob patterns
+
+**If "Scope to recent commits":**
+Run `git log --oneline -15` and display the output. Then prompt:
+
+> Select a base commit. Files changed from that commit onward will be included in the audit.
+>
+> Enter the short SHA (e.g. `d8e004a` to audit only your last 3 commits).
+>
+> 💡 _Tip: choose the commit just **before** your first change on this branch._
+
+Once the user provides a SHA, run:
+```bash
+git diff --name-only <sha>...HEAD
+```
+Replace the file list with the result. Record scope as `commit range <sha>...HEAD`.
+
+**If "Change base branch":**
+Ask the user for a ref (e.g. `origin/develop`). Run:
+```bash
+git diff --name-only <ref>...HEAD
+```
+Replace the file list with the result. Record scope as `<ref>...HEAD`.
+
+**If "Specify files manually":**
+Ask the user for comma-separated paths or glob patterns. Replace the file list with the result. Record scope as `manually specified`.
+
+**If "Proceed with all N files":**
+Record scope as `origin/main...HEAD` (or whichever ref succeeded in Phase 0).
+
+After any re-scoping, confirm the final file count:
+> Scope confirmed: **N files**. Proceeding with audits.
 
 ---
 
@@ -50,36 +107,48 @@ Read the `## Summary` block of the result:
 
 ---
 
-## Phase 2: Classify Ticket
+## Phase 2: Select Audit Depth
 
-Use Issue Type and changed-files count to select the audit set:
+**If `--hook` is present in `$ARGUMENT`:** Auto-select **Quick** without prompting. Skip the menu and proceed directly to Phase 3 with the Quick skill list.
 
-| Condition | Audit Set |
-|-----------|-----------|
-| Issue Type = Bug | Bug |
-| Issue Type = Epic | Large feature |
-| Feature/Story/Task AND <15 changed files AND no new directories | Small feature |
-| Feature/Story/Task AND (≥15 changed files OR new directories added) | Large feature |
+**Otherwise, ask the user:**
 
-If the classification is ambiguous (e.g., a "Task" with 18 changed files and no new directories), confirm with the user before proceeding.
+> **Which audit depth would you like to run?**
+> 1. **Quick** (default) — `audit-best-practices`
+> 2. **Medium** — `audit-best-practices`, `audit-errors`, `audit-naming`, `audit-todos`
+> 3. **In-depth** — all 8 audit skills
+> 4. **Custom** — choose individual audits
+
+If the user selects **Custom**, present a checklist of all available audits (default on: `audit-best-practices`):
+- [x] `audit-best-practices`
+- [ ] `audit-errors`
+- [ ] `audit-naming`
+- [ ] `audit-todos`
+- [ ] `audit-boundaries`
+- [ ] `audit-abstractions`
+- [ ] `audit-dead-code`
+- [ ] `audit-state-drift`
 
 **Audit sets:**
 
-| Set | Skills |
-|-----|--------|
-| Bug | `audit-errors`, `audit-state-drift`, `audit-dead-code` |
-| Small feature | `audit-errors`, `audit-naming`, `audit-best-practices` |
-| Large feature | `audit-errors`, `audit-naming`, `audit-best-practices`, `audit-boundaries`, `audit-abstractions`, `audit-dead-code`, `audit-state-drift`, `audit-todos` |
+| Depth | Skills |
+|-------|--------|
+| Quick | `audit-best-practices` |
+| Medium | `audit-best-practices`, `audit-errors`, `audit-naming`, `audit-todos` |
+| In-depth | `audit-best-practices`, `audit-errors`, `audit-naming`, `audit-todos`, `audit-boundaries`, `audit-abstractions`, `audit-dead-code`, `audit-state-drift` |
+| Custom | user-selected subset |
+
+Record the selected depth label. Resolve to a flat skill list and carry it into Phase 3.
 
 ---
 
 ## Phase 3: Parallel Quality Audits
 
-**Launch all selected audit skills simultaneously** using `Task` with `subagent_type=Explore`.
+**Launch all skills from the Phase 2 skill list simultaneously** using `Task` with `subagent_type=Explore`.
 
 For each subagent, provide:
 
-1. **The changed files list** from Phase 0 — each audit must restrict analysis to these files only, per its "File Scope" instructions.
+1. **The changed files list** from Phase 0b — each audit must restrict analysis to these files only, per its "File Scope" instructions.
 2. **The instruction**: "Use compact grouped output format. Omit groups with zero findings."
 
 ---
@@ -100,8 +169,8 @@ End with a verdict block:
 Ticket:        [TICKET-ID] — [Title]
 Issue type:    [Bug | Feature | etc.]
 Jira gate:     [Complete | Nearly Complete | bypassed (--skip-jira)]
-Audit set:     [Bug | Small feature | Large feature]
-Files scoped:  X changed files
+Audit depth:   [Quick | Medium | In-depth | Custom]
+Files scoped:  X changed files ([scope method])
 
 ✅ Ready for PR — 0 issues found
 ```
@@ -114,9 +183,16 @@ or
 Ticket:        [TICKET-ID] — [Title]
 Issue type:    [Bug | Feature | etc.]
 Jira gate:     [Complete | Nearly Complete | bypassed (--skip-jira)]
-Audit set:     [Bug | Small feature | Large feature]
-Files scoped:  X changed files
+Audit depth:   [Quick | Medium | In-depth | Custom]
+Files scoped:  X changed files ([scope method])
 
 ⚠️  N issues need attention before PR
 Critical: X  |  High: X  |  Medium: X  |  Low: X
 ```
+
+`[scope method]` values:
+- `origin/main...HEAD` — default
+- `commit range <sha>...HEAD` — after commit selection
+- `<ref>...HEAD` — after base branch change
+- `manually specified` — after manual entry
+- `full codebase (no changed files detected)` — unscoped fallback

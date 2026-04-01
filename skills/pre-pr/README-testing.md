@@ -34,31 +34,57 @@ Example: `/troubleshoot why the pre-pr skill didn't run in #session`
 - Skill should stay limited to recently changed files.
 - The JIRA audit should act as a gate, and other tests should not run if it fails
 - The `--skip-jira` flag should skip the JIRA audit, and the rest of the tests should then run
+- The `--hook` flag should auto-select Quick depth without prompting
 - Tests after the JIRA audit should run as parallel sub-agents/processes
 
-### On a bug branch
+### Quick (default)
 
-- After JIRA audit, should only run these skills:
-  - `audit-errors`
-  - `audit-state-drift`
-  - `audit-dead-code`
+Run: `/pre-pr PROJ-123` and select **Quick** (or press Enter for default)
 
-### On a feature branch
-
-- For a smaller feature, these skills should run after the JIRA audit:
-  - `audit-errors`
-  - `audit-naming`
+- Should prompt for depth selection
+- After JIRA audit, should only run:
   - `audit-best-practices`
 
-- For a larger feature, these skills should run after the JIRA audit:
+### Medium
+
+Run: `/pre-pr PROJ-123` and select **Medium**
+
+- After JIRA audit, should run:
+  - `audit-best-practices`
   - `audit-errors`
   - `audit-naming`
+  - `audit-todos`
+
+### In-depth
+
+Run: `/pre-pr PROJ-123` and select **In-depth**
+
+- After JIRA audit, should run all 8 skills in parallel:
   - `audit-best-practices`
+  - `audit-errors`
+  - `audit-naming`
+  - `audit-todos`
   - `audit-boundaries`
   - `audit-abstractions`
   - `audit-dead-code`
   - `audit-state-drift`
-  - `audit-todos`
+
+### Custom
+
+Run: `/pre-pr PROJ-123` and select **Custom**
+
+- Should present a checklist of all 8 audits with `audit-best-practices` checked by default
+- Should run only the audits the user selects
+- Should not run any audit that was not selected
+
+### Hook / automated caller
+
+Run: `/pre-pr PROJ-123 --hook`
+
+- Should **not** prompt for depth selection
+- Should automatically use Quick depth
+- After JIRA audit, should only run:
+  - `audit-best-practices`
 
 ## We'd love to know...
 

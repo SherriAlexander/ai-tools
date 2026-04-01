@@ -14,24 +14,30 @@ To bypass the `audit-jira` completeness gate (e.g. when the audit result is unre
 /pre-pr PROJ-123 --skip-jira
 ```
 
+For automated callers (Husky, git hooks) — auto-selects Quick depth without prompting:
+
+```
+/pre-pr PROJ-123 --hook
+```
+
 ## What it does
 
 | Phase | What happens |
 |-------|--------------|
 | 0. Scope | Detects changed files via `git diff` — all audits run against these files only |
 | 1. Gate | Runs `audit-jira` — stops if ticket requirements are incomplete (skipped with `--skip-jira`) |
-| 2. Classify | Detects ticket type and size to select the right audit set |
+| 2. Select depth | Prompts for Quick / Medium / In-depth / Custom (auto-selects Quick if `--hook`) |
 | 3. Audit | Runs selected audits in parallel, scoped to changed files |
 | 4. Report | Consolidates findings with a `✅ Ready` or `⚠️ N issues` verdict |
 
-## Audit sets
+## Audit depths
 
-| Ticket type | Audits run |
-|-------------|------------|
-| Bug | `audit-errors`, `audit-state-drift`, `audit-dead-code` |
-| Small feature (<15 files changed, no new directories) | `audit-errors`, `audit-naming`, `audit-best-practices` |
-| Large feature (≥15 files or new directories) | All 8 audit skills in parallel |
-| Epic | All 8 audit skills in parallel |
+| Depth | Audits run |
+|-------|------------|
+| Quick (default) | `audit-best-practices` |
+| Medium | `audit-best-practices`, `audit-errors`, `audit-naming`, `audit-todos` |
+| In-depth | All 8 audit skills in parallel |
+| Custom | User-selected subset |
 
 ## Why scoped to changed files?
 
