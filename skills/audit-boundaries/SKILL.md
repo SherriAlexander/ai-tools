@@ -21,6 +21,10 @@ Clean Architecture's fundamental rule: "Source code dependencies can only point 
 | **Scattered Environment Variables** | Config access outside config module |
 | **Cross-bounded-context Imports** | DDD boundary violations |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify architecture style**:
@@ -412,28 +416,27 @@ Report each finding with:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## Boundaries Audit Results
+## Boundaries Audit — N findings
 
-### Architecture Detected
-- Style: [Clean/MVC/Layered/None]
-- Layers found: [list]
+### [Check name] [SEVERITY]
+[One sentence: what this violation is and the architectural fix.]
 
-### Summary
-- X presentation → data violations
-- X domain → infrastructure violations
-- X fat controllers
-- X ORM outside repository
-- X scattered env var access
+- `path/to/file.ts:42` — [what imports what, ~5–10 words]
+- `path/to/file.ts:88` — [what imports what]
 
-### P1 Critical
-| Violation | Location | From → To | Fix |
-|-----------|----------|-----------|-----|
-| ... | file:line | ... | ... |
-
-### P2 High
-...
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- No architecture summary or layer detection in output
+- No prose summaries or introductory paragraphs
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 

@@ -21,6 +21,10 @@ Abstractions that add indirection without value increase cognitive load and main
 | **Prop/Config Drilling** | Unchanged parameters passed through many layers |
 | **God Utils** | Catch-all classes with unrelated static methods |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify the tech stack**:
@@ -365,27 +369,27 @@ Report each finding with:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## Abstractions Audit Results
+## Abstractions Audit — N findings
 
-### Summary
-- X pass-through functions found
-- X single-method classes
-- X single-implementation interfaces
-- X middle man classes
-- X god utils/managers
+### [Check name] [SEVERITY]
+[One sentence: what this pattern is and the canonical fix.]
 
-### P1 Critical - Inline or Convert
-| Issue | Location | Pattern | Fix |
-|-------|----------|---------|-----|
-| ... | file:line | ... | ... |
+- `path/to/file.ts:42` — [what's affected, ~5–10 words]
+- `path/to/file.ts:88` — [what's affected]
 
-### P2 High - Simplify
-...
-
-### P3 Medium - Refactor When Touched
-...
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- No summary tables or introductory paragraphs
+- No prose summaries
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 

@@ -21,6 +21,10 @@ Research by Butler et al. found **statistically significant associations** betwe
 | **Casing Inconsistency** | Mixed camelCase/snake_case in same codebase |
 | **Abbreviation Inconsistency** | Both `btn` and `button` in same codebase |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify the tech stack**:
@@ -408,24 +412,27 @@ Report each finding with:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## Names Audit Results
+## Names Audit — N findings
 
-### Summary
-- X vague generic names
-- X single-letter variables (outside idioms)
-- X boolean naming issues
-- X casing inconsistencies
-- X abbreviation inconsistencies
+### [Check name] [SEVERITY]
+[One sentence: what this pattern is and the canonical fix.]
 
-### P1 Critical
-| Issue | Location | Current | Suggested |
-|-------|----------|---------|-----------|
-| ... | file:line | ... | ... |
+- `path/to/file.ts:42` — `currentName` → `suggestedName`
+- `path/to/file.ts:88` — `currentName` → `suggestedName`
 
-### P2 High
-...
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- For each instance, show current name → suggested name (not full prose)
+- No summary tables or introductory paragraphs
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 

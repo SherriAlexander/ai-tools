@@ -6,6 +6,10 @@ context: fork
 
 # Audit Best Practices
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Workflow
 
 ### Phase 1: Stack Detection
@@ -74,37 +78,28 @@ Check code against best practices for the detected stack. Categories to evaluate
 
 ### Phase 4: Report
 
-Structure findings as:
+Use the **compact grouped output format**:
 
 ```markdown
-# Best Practices Audit Report
+## Best Practices Audit — N findings
 
-## Stack Detected
-- **Language**: [language + version if detectable]
-- **Framework**: [framework(s)]
-- **Notable Tools**: [build tools, linters, etc.]
+### [Violation pattern] [SEVERITY]
+[One sentence: what the violation is and the best practice to apply.]
 
-## Summary
-[2-3 sentence overview of findings]
+- `path/to/file.ts:42` — [what's affected, ~5–10 words]
+- `path/to/file.ts:88` — [what's affected]
 
-## Guideline Conflicts
-[If instruction files exist, note any intentional deviations from community best practices]
-[e.g., "Your guidelines specify X, but best practice for TypeScript would be Y — this appears intentional"]
-
-## Findings
-
-### Critical (should fix)
-[Issues that violate core best practices or cause problems]
-
-### Recommended (improve quality)
-[Patterns that could be more aligned with best practices]
-
-### Minor (style preferences)
-[Small improvements, optional]
-
-## Positive Patterns Observed
-[What the codebase does well in terms of best practices]
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- No stack detection summary in output
+- No "Positive Patterns Observed" section
+- No prose summaries; surface intentional guideline deviations as LOW findings if relevant
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Guidelines
 

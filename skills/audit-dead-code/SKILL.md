@@ -21,6 +21,10 @@ Dead code degrades comprehensibility and introduces maintenance risk. Research (
 | **Commented-out Code** | 70% | Old code left in comments |
 | **Stale Feature Flags** | 80% | Flags at 100%/0% for extended periods |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify entry points**:
@@ -399,42 +403,28 @@ Report each finding with:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## Dead Code Audit Results
+## Dead Code Audit — N findings
 
-### Summary
-- X unreachable code blocks (100% safe to delete)
-- X unused imports (90% confidence)
-- X orphaned files (85% confidence)
-- X unused exports (60% confidence)
-- X commented code blocks (70% confidence)
-- X stale feature flags (80% confidence)
+### [Check name] [SEVERITY] *(X% confidence)*
+[One sentence: what this pattern is and why it can be safely removed.]
 
-### Estimated Impact
-- Lines removable: ~X
-- Files deletable: X
-- Bundle size reduction: ~X KB (estimate)
+- `path/to/file.ts:42` — [what's affected, ~5–10 words]
+- `path/to/file.ts:88` — [what's affected]
 
-### 100% Confidence - Auto-remove Safe
-| Location | Type | Code |
-|----------|------|------|
-| file:line | Unreachable after return | `console.log(...)` |
-
-### 90% Confidence - Brief Review
-| Location | Type | Symbol |
-|----------|------|--------|
-| file:line | Unused import | `debounce` |
-
-### 85% Confidence - Check Dynamic Usage
-| File | Reason | Imported By |
-|------|--------|-------------|
-| utils/old.ts | No static imports | None |
-
-### 60-70% Confidence - Manual Review Required
-| Location | Type | Notes |
-|----------|------|-------|
-| file:line | Unused export | May be public API |
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- Include confidence level in the group heading (e.g., `### Unused Exports [MEDIUM] *(60% confidence)*`)
+- No summary tables, impact estimates, or bundle size projections
+- No prose summaries or introductory paragraphs
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 

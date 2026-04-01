@@ -21,6 +21,10 @@ Error handling inconsistency creates unpredictable failure modes and debugging n
 | **Inconsistent Error Strategy** | Mixed approaches (exceptions vs result types vs error codes) |
 | **Pointless Rethrow** | Catch only to rethrow unchanged |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify the tech stack**:
@@ -398,24 +402,27 @@ Report each finding with:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## Errors Audit Results
+## Errors Audit — N findings
 
-### Summary
-- X empty catch blocks
-- X overly broad catches
-- X lost exception chains
-- X promises without catch
-- X error strategy inconsistencies
+### [Check name] [SEVERITY]
+[One sentence: what this pattern is and the canonical fix.]
 
-### P1 Critical - Fix Immediately
-| Issue | Location | Pattern | Fix |
-|-------|----------|---------|-----|
-| ... | file:line | ... | ... |
+- `path/to/file.ts:42` — [what's affected, ~5–10 words]
+- `path/to/file.ts:88` — [what's affected]
 
-### P2 High - Fix Soon
-...
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- No stack detection or tech summary in output
+- No prose summaries or introductory paragraphs
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 

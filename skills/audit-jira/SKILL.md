@@ -120,6 +120,7 @@ Output a structured report:
 # Jira Ticket Verification: [TICKET-ID] — [Ticket Title]
 
 ## Summary
+- **Issue Type**: [Bug | Story | Task | Feature | Epic | ...]
 - **Status**: [Complete / Nearly Complete / Incomplete]
 - **Requirements checked**: X
 - **Complete**: X | **Partial**: X | **Missing**: X | **Out of Scope**: X | **Cannot Verify**: X

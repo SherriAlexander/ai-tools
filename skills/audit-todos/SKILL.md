@@ -36,6 +36,10 @@ TODOs have an average lifespan of **166 days**. Nearly **47% are low-quality**, 
 | `NOTE` | Documentation/context | Info |
 | `DEPRECATED` | Scheduled for removal | Medium |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify issue tracker**:
@@ -389,35 +393,28 @@ Group TODOs into actionable categories:
 
 ## Phase 3: Generate Report
 
-### Summary Statistics
+Use the **compact grouped output format**:
+
 ```markdown
-## TODO Audit Summary
+## TODOs Audit — N findings
 
-### Overview
-- **Total markers found**: X
-- **Average age**: X days
-- **Oldest marker**: X days old (file:line)
+### [Marker type or category] [SEVERITY]
+[One sentence: what this marker type signals and the recommended action.]
 
-### By Type
-| Type | Count | Avg Age |
-|------|-------|---------|
-| TODO | X | X days |
-| FIXME | X | X days |
-| HACK | X | X days |
-| BUG | X | X days |
+- `path/to/file.ts:42` — [marker text summary, ~5–10 words] *(180d, @alice)*
+- `path/to/file.ts:88` — [marker text summary]
 
-### By Priority
-| Priority | Count | Action |
-|----------|-------|--------|
-| Critical | X | Resolve now |
-| High | X | Plan soon |
-| Medium | X | Add to backlog |
-| Low | X | Review/delete |
-
-### Health Score
-Technical Debt Index: X/100
-(Lower is better - based on count, age, and severity)
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Group by marker type and/or issue category (e.g., "Security TODOs [CRITICAL]", "Bug markers [HIGH]", "Stale references [HIGH]", "Low-quality TODOs [MEDIUM]")
+- Omit groups with zero findings entirely
+- Include age in days and owner in each instance line when available (e.g., `*(180d, @alice)*`)
+- No statistics tables, health scores, or by-type summaries
+- No prose summaries or introductory paragraphs
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 4: Fix Options
 

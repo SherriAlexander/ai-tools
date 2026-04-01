@@ -23,6 +23,10 @@ State drift occurs when application state becomes inconsistent, duplicated, or p
 | **Missing State Machines** | Ad-hoc state transitions instead of explicit FSMs |
 | **Single Source of Truth Violations** | Multiple authoritative sources for same data |
 
+## File Scope
+
+If a list of changed files has been provided in the conversation context (from a `/pre-pr` invocation), **restrict all analysis to those files only**. Do not read or analyze files outside this list. When running standalone, analyze the full codebase.
+
 ## Phase 1: Discover the Codebase
 
 1. **Identify the tech stack**:
@@ -348,30 +352,27 @@ Categorize by severity:
 
 ## Phase 4: Present Findings
 
+Use the **compact grouped output format**:
+
 ```markdown
-## State Drift Audit Results
+## State Drift Audit — N findings
 
-### Summary
-- X impossible state patterns found
-- X magic string usages
-- X duplicated state instances
-- X state machine opportunities
-- X source of truth violations
+### [Check name] [SEVERITY]
+[One sentence: what this pattern is and the canonical fix.]
 
-### P1 Critical - Fix Immediately
-| Issue | Location | Pattern | Fix |
-|-------|----------|---------|-----|
-| ... | file:line | ... | ... |
+- `path/to/file.ts:42` — [what's affected, ~5–10 words]
+- `path/to/file.ts:88` — [what's affected]
 
-### P2 High - Fix Soon
-...
-
-### P3 Medium - Plan to Fix
-...
-
-### P4 Low - Nice to Have
-...
+---
+N findings — X critical, Y high, Z medium, W low
 ```
+
+**Output rules:**
+- Omit groups with zero findings entirely
+- No summary tables or introductory paragraphs
+- No prose summaries
+- Fix hint per instance: ≤10 words
+- Zero total findings: output `✓ 0 findings`
 
 ## Phase 5: Fix Options
 
