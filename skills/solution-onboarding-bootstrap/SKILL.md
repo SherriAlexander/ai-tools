@@ -1,6 +1,7 @@
 ---
+
 name: solution-onboarding-bootstrap
-description: bootstrap the initial ai-assisted developer onboarding infrastructure for a solution repository. use when a solutions architect or team lead needs to create or initialize repo-native setup guidance — whether starting from scratch or reconciling informal existing docs. triggers for: setting up an ai onboarding agent in a repo, creating the initial setup/troubleshooting/environment docs, bootstrapping copilot onboarding for a team, or initializing the standard .github/copilot/solution-onboarding structure. the skill autonomously inspects the repo, interviews the solutions architect, and generates the full standard file set and onboarding agent. do not trigger when a developer is getting themselves set up, troubleshooting their own environment, or asking to improve existing copilot instructions without a full bootstrap.
+description: bootstrap the initial ai-assisted developer onboarding infrastructure for a solution repository. use when a solutions architect or team lead needs to create or initialize repo-native setup guidance — whether starting from scratch or reconciling informal existing docs. triggers for setting up an ai onboarding agent in a repo, creating the initial setup/troubleshooting/environment docs, bootstrapping copilot onboarding for a team, or initializing the standard .github/copilot/solution-onboarding structure. the skill autonomously inspects the repo, interviews the solutions architect, and generates the full standard file set and onboarding agent. do not trigger when a developer is getting themselves set up, troubleshooting their own environment, or asking to improve existing copilot instructions without a full bootstrap.
 ---
 
 # Solution Onboarding Bootstrap
@@ -21,33 +22,50 @@ Complete the work in this order:
 
 ## Operating rules
 
-- Be proactive in gathering information. Read files, inspect the repo, and run commands directly rather than asking the solutions architect to do it.
-- Default to preserving useful existing guidance.
-- Never blindly overwrite an existing `.github/copilot-instructions.md`.
-- If `.github/copilot-instructions.md` exists, preserve and augment it.
-- If it links to other markdown files, inspect those files and use them as source material.
-- Normalize useful content into the standard structure.
-- Ask the solutions architect whether older markdown files should be preserved, retired, or absorbed.
-- Keep access and secrets guidance inside `.github/copilot/solution-onboarding/setup.md`.
-- Always include `.github/copilot/solution-onboarding/environment-matrix.md` and `.github/copilot/solution-onboarding/change-log-for-ai.md`.
-- Use one onboarding agent that covers onboarding, troubleshooting, and doc update drafting.
-- Enforce the section templates defined in the Section Templates section of this skill.
-- Support two execution modes:
-  - **draft mode**: propose file contents or diffs for review.
-  - **overwrite mode**: write or rewrite the standard files directly.
-- Treat the change log as a required artifact.
-- The onboarding agent may review recent commits for setup-impacting changes when explicitly asked to update docs, but this skill itself is for initial bootstrap only.
+* Be proactive in gathering information. Read files, inspect the repo, and run commands directly rather than asking the solutions architect to do it.
+* Default to preserving useful existing guidance.
+* Never blindly overwrite an existing `.github/copilot-instructions.md`.
+* If `.github/copilot-instructions.md` exists, preserve and augment it.
+* If it links to other markdown files, inspect those files and use them as source material.
+* Normalize useful content into the standard structure.
+* Ask the solutions architect whether older markdown files should be preserved, retired, or absorbed.
+* Keep access and secrets guidance inside `.github/copilot/solution-onboarding/setup.md`.
+* Always include `.github/copilot/solution-onboarding/environment-matrix.md` and `.github/copilot/solution-onboarding/change-log-for-ai.md`.
+* Use one onboarding agent that covers onboarding, troubleshooting, and doc update drafting.
+* Enforce the section templates defined in the Section Templates section of this skill.
+* Support two execution modes:
+
+  * **draft mode**: propose file contents or diffs for review.
+  * **overwrite mode**: write or rewrite the standard files directly.
+* Treat the change log as a required artifact.
+* The onboarding agent may review recent commits for setup-impacting changes when explicitly asked to update docs, but this skill itself is for initial bootstrap only.
+
+## Multi-Tool Native Output Requirement
+
+In addition to the GitHub Copilot onboarding system, this skill must also generate fully native onboarding systems for:
+
+* Claude Code
+* Codex-style agents
+
+Each system must:
+
+* be complete and self-contained
+* follow the conventions of the target tool
+* not rely on or reference another tool’s files
+* maintain consistency in meaning, but adapt structure and tone appropriately
+
+Do not implement shared references between tools. Each tool must function independently.
 
 ## Standard file set
 
 Always create or reconcile these files:
 
-- `.github/copilot-instructions.md`
-- `.github/agents/onboarding.agent.md`
-- `.github/copilot/solution-onboarding/setup.md`
-- `.github/copilot/solution-onboarding/troubleshooting.md`
-- `.github/copilot/solution-onboarding/environment-matrix.md`
-- `.github/copilot/solution-onboarding/change-log-for-ai.md`
+* `.github/copilot-instructions.md`
+* `.github/agents/onboarding.agent.md`
+* `.github/copilot/solution-onboarding/setup.md`
+* `.github/copilot/solution-onboarding/troubleshooting.md`
+* `.github/copilot/solution-onboarding/environment-matrix.md`
+* `.github/copilot/solution-onboarding/change-log-for-ai.md`
 
 Use these exact paths unless the user explicitly requests a different convention. If shared reference markdown is created or reconciled for this onboarding system, place it under `.github/copilot/solution-onboarding/references/`.
 
@@ -57,24 +75,24 @@ Inspect the repository before asking the solutions architect to write anything f
 
 Look for:
 
-- existing `.github/copilot-instructions.md`
-- markdown files linked from it
-- setup or troubleshooting content in `README.md`, `docs/`, `.github/`, `CONTRIBUTING.md`, scripts, devcontainer files, docker files, compose files, lockfiles, runtime version files, CI files, and local env templates
-- environment variable files and templates (`.env`, `.env.example`, `.env.local`, `docker-compose.yml`, devcontainer `remoteEnv`, CI env blocks, and any scripts that reference `$ENV_VAR` or `process.env`)
-- required environment variables, especially those needed by containers or services at startup (e.g., volume mounts, license paths, service URLs, feature flags)
-- FE vs BE setup differences
-- Mac vs Windows differences
-- runtime, package manager, and service dependencies
-- validation or smoke-test clues
-- scripts or commands that require elevated permissions or admin mode (e.g., PowerShell scripts that must be run as Administrator, commands requiring sudo, or installers that require elevated privileges)
-- likely setup blockers and stale guidance
+* existing `.github/copilot-instructions.md`
+* markdown files linked from it
+* setup or troubleshooting content in `README.md`, `docs/`, `.github/`, `CONTRIBUTING.md`, scripts, devcontainer files, docker files, compose files, lockfiles, runtime version files, CI files, and local env templates
+* environment variable files and templates (`.env`, `.env.example`, `.env.local`, `docker-compose.yml`, devcontainer `remoteEnv`, CI env blocks, and any scripts that reference `$ENV_VAR` or `process.env`)
+* required environment variables, especially those needed by containers or services at startup (e.g., volume mounts, license paths, service URLs, feature flags)
+* FE vs BE setup differences
+* Mac vs Windows differences
+* runtime, package manager, and service dependencies
+* validation or smoke-test clues
+* scripts or commands that require elevated permissions or admin mode (e.g., PowerShell scripts that must be run as Administrator, commands requiring sudo, or installers that require elevated privileges)
+* likely setup blockers and stale guidance
 
 When you find existing markdown guidance, classify it as:
 
-- useful and current
-- useful but informal
-- stale or conflicting
-- unknown and needs architect review
+* useful and current
+* useful but informal
+* stale or conflicting
+* unknown and needs architect review
 
 ## Step 2: reconcile the standard file set
 
@@ -82,22 +100,22 @@ Create the standard file set if it does not exist.
 
 If files already exist:
 
-- preserve useful repo-specific content
-- rewrite into the standard template only where helpful
-- avoid duplication across files
-- keep one clear source of truth per topic
-- place solution-onboarding markdown under `.github/copilot/solution-onboarding/`
-- place shared reference markdown under `.github/copilot/solution-onboarding/references/`
+* preserve useful repo-specific content
+* rewrite into the standard template only where helpful
+* avoid duplication across files
+* keep one clear source of truth per topic
+* place solution-onboarding markdown under `.github/copilot/solution-onboarding/`
+* place shared reference markdown under `.github/copilot/solution-onboarding/references/`
 
 ### Existing `copilot-instructions.md`
 
 If `.github/copilot-instructions.md` already exists:
 
-- preserve and augment it
-- keep useful repo-specific instructions
-- add or update links to the standard docs
-- remove duplication only when the replacement location is clear
-- do not fully rewrite unless the user explicitly asks
+* preserve and augment it
+* keep useful repo-specific instructions
+* add or update links to the standard docs
+* remove duplication only when the replacement location is clear
+* do not fully rewrite unless the user explicitly asks
 
 ## Step 3: draft from the repository
 
@@ -105,24 +123,24 @@ Draft the first pass from the codebase and existing markdown before asking inter
 
 Infer and draft, where possible:
 
-- recommended setup approaches already implied by the repo
-- FE vs BE differences
-- Mac vs Windows differences
-- prerequisites and runtime versions
-- required environment variables, including those used by Docker containers, devcontainers, or services at startup — inspect `.env` files, compose files, devcontainer config, and scripts for any variable that must be set before the solution will run
-- local service dependencies
-- setup steps and validation checks
-- scripts or commands that require elevated permissions or admin mode — note these explicitly in setup docs
-- common setup failure points suggested by config or scripts
-- environment matrix rows
-- seed entries for the change log if recent setup-impacting changes are already obvious
+* recommended setup approaches already implied by the repo
+* FE vs BE differences
+* Mac vs Windows differences
+* prerequisites and runtime versions
+* required environment variables, including those used by Docker containers, devcontainers, or services at startup — inspect `.env` files, compose files, devcontainer config, and scripts for any variable that must be set before the solution will run
+* local service dependencies
+* setup steps and validation checks
+* scripts or commands that require elevated permissions or admin mode — note these explicitly in setup docs
+* common setup failure points suggested by config or scripts
+* environment matrix rows
+* seed entries for the change log if recent setup-impacting changes are already obvious
 
 Do not invent:
 
-- secret values
-- credential locations that are not known
-- internal access procedures that are not grounded
-- unsupported setup approaches
+* secret values
+* credential locations that are not known
+* internal access procedures that are not grounded
+* unsupported setup approaches
 
 Flag uncertain sections clearly for architect confirmation.
 
@@ -147,22 +165,22 @@ Use the core interview after the first draft exists. Ask only follow-ups when ne
 
 ### Interview behavior
 
-- Ask one question at a time. Wait for the solutions architect's response before asking the next question.
-- Ask all 12 questions in order. Do not skip any question, even if a previous answer seems to partially cover it.
-- Track which questions have been asked and confirm all 12 are completed before ending the interview.
-- Ask the first draft-informed version of the questions, not generic questions.
-- Reference specific files or setup approaches you found when asking for confirmation.
-- Keep the interview tight.
-- Ask follow-ups only where the repo and current answers are ambiguous. Insert them immediately after the question that prompted them, before continuing to the next core question.
-- Use the answers to resolve uncertain sections and legacy-doc handling.
+* Ask one question at a time. Wait for the solutions architect's response before asking the next question.
+* Ask all 12 questions in order. Do not skip any question, even if a previous answer seems to partially cover it.
+* Track which questions have been asked and confirm all 12 are completed before ending the interview.
+* Ask the first draft-informed version of the questions, not generic questions.
+* Reference specific files or setup approaches you found when asking for confirmation.
+* Keep the interview tight.
+* Ask follow-ups only where the repo and current answers are ambiguous. Insert them immediately after the question that prompted them, before continuing to the next core question.
+* Use the answers to resolve uncertain sections and legacy-doc handling.
 
 ## Step 5: handle older markdown files explicitly
 
 When older markdown files already exist, present a concise recommendation for each file and ask the architect to confirm whether it should be:
 
-- preserved
-- retired
-- absorbed into the standard files
+* preserved
+* retired
+* absorbed into the standard files
 
 If a file is absorbed, name the target standard file.
 If a file is retired, recommend deprecation wording instead of silent deletion.
@@ -173,13 +191,13 @@ Use the Section Templates section of this skill for the required structure.
 
 ### Required output behavior
 
-- Keep setup and access/secrets in `.github/copilot/solution-onboarding/setup.md`.
-- Keep troubleshooting in `.github/copilot/solution-onboarding/troubleshooting.md`.
-- Keep FE/BE and Mac/Windows guidance reflected in both `setup.md` and `environment-matrix.md`.
-- Keep `change-log-for-ai.md` reverse chronological.
-- Add clear notes where human confirmation is still needed.
-- In draft mode, show proposed file contents or diffs.
-- In overwrite mode, write the files directly.
+* Keep setup and access/secrets in `.github/copilot/solution-onboarding/setup.md`.
+* Keep troubleshooting in `.github/copilot/solution-onboarding/troubleshooting.md`.
+* Keep FE/BE and Mac/Windows guidance reflected in both `setup.md` and `environment-matrix.md`.
+* Keep `change-log-for-ai.md` reverse chronological.
+* Add clear notes where human confirmation is still needed.
+* In draft mode, show proposed file contents or diffs.
+* In overwrite mode, write the files directly.
 
 ## Step 7: generate the onboarding copilot agent
 
@@ -187,18 +205,78 @@ Create `.github/agents/onboarding.agent.md` using the Onboarding Agent Template 
 
 Follow the template exactly. Do not add a `model:` field — leave model selection to the environment.
 
+## Step 7b: generate onboarding systems for Claude Code and Codex
+
+Using the finalized onboarding content, generate fully native onboarding systems for Claude Code and Codex-style agents.
+
+### Claude Code
+
+Create:
+
+* `CLAUDE.md`
+* `CLAUDE_ONBOARDING_AGENT.md`
+
+#### CLAUDE.md
+
+Must:
+
+* contain onboarding guidance directly
+* include setup, environment differences, and troubleshooting guidance
+* instruct Claude to guide onboarding step-by-step
+* follow a conversational, agent-oriented style
+
+#### CLAUDE_ONBOARDING_AGENT.md
+
+Must:
+
+* define onboarding agent behavior including:
+
+  * prechecks
+  * step-by-step onboarding guidance
+  * troubleshooting-first approach
+  * proposing documentation updates when gaps are found
+
+---
+
+### Codex
+
+Create:
+
+* `AGENTS.md` or `INSTRUCTIONS.md`
+
+Must:
+
+* contain complete onboarding instructions
+* be execution-focused and concise
+* include setup steps, validation, environment differences, and troubleshooting rules
+* enforce deterministic behavior and prohibit invention outside documented steps
+
+---
+
+### Consistency Requirement
+
+All onboarding systems must:
+
+* reflect the same onboarding logic
+* reflect the same setup approach
+* reflect the same environment requirements
+
+However, structure, tone, and format must be adapted to each tool.
+
+Do not copy files verbatim between systems without adaptation.
+
 ## Deliverable checklist
 
 Before finishing, confirm that the repository has:
 
-- reconciled `.github/copilot-instructions.md`
-- created `.github/agents/onboarding.agent.md`
-- created `.github/copilot/solution-onboarding/setup.md`
-- created `.github/copilot/solution-onboarding/troubleshooting.md`
-- created `.github/copilot/solution-onboarding/environment-matrix.md`
-- created `.github/copilot/solution-onboarding/change-log-for-ai.md`
-- recorded unresolved questions or confirmation gaps
-- identified the disposition of older markdown files
+* reconciled `.github/copilot-instructions.md`
+* created `.github/agents/onboarding.agent.md`
+* created `.github/copilot/solution-onboarding/setup.md`
+* created `.github/copilot/solution-onboarding/troubleshooting.md`
+* created `.github/copilot/solution-onboarding/environment-matrix.md`
+* created `.github/copilot/solution-onboarding/change-log-for-ai.md`
+* recorded unresolved questions or confirmation gaps
+* identified the disposition of older markdown files
 
 ## Output format
 
@@ -215,8 +293,6 @@ When reporting back, provide:
 Use these templates when drafting or rewriting the standard files.
 
 ### .github/copilot/solution-onboarding/setup.md
-
-Use this exact section order unless the user explicitly requests a change.
 
 ```md
 # Setup
