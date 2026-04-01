@@ -9,6 +9,8 @@ VSCode updated to the latest version
 
 AIResources repo, branch `feature/pre-qa-testing`
 
+In your project, look for a `/.github/copilot-instructions.md` file.  If it doesn't exist, run the `/init` command in your Copilot chat before proceeding.
+
 Copy these skills (temporarily) into your project at /.github/skills/
   - All skills starting with `audit-*`
   - `pre-pr`
