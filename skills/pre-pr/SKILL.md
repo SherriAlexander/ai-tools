@@ -12,6 +12,8 @@ Verify your work satisfies the Jira ticket AND meets code quality standards befo
 
 The `$ARGUMENT` is the Jira ticket identifier — either a ticket ID (e.g. `PROJ-123`) or a full Jira URL. If not provided, ask the user before proceeding.
 
+An optional `--skip-jira` flag may be appended to bypass the `audit-jira` completeness gate (e.g. `PROJ-123 --skip-jira`). Use this when the audit result is known to be unreliable or the user has confirmed the ticket requirements are met. When the flag is present, skip Phase 1 entirely, note the bypass in the Phase 4 summary, and proceed directly to Phase 2.
+
 ---
 
 ## Phase 0: Scope Changed Files
@@ -33,6 +35,8 @@ Capture the changed file list. Pass it to every audit in Phase 3.
 ---
 
 ## Phase 1: Completeness Gate (audit-jira)
+
+> **Skip this phase** if `--skip-jira` was passed. Proceed directly to Phase 2 and record `Jira gate: bypassed (--skip-jira)` in the Phase 4 summary.
 
 Run `audit-jira $ARGUMENT`.
 
@@ -95,6 +99,7 @@ End with a verdict block:
 
 Ticket:        [TICKET-ID] — [Title]
 Issue type:    [Bug | Feature | etc.]
+Jira gate:     [Complete | Nearly Complete | bypassed (--skip-jira)]
 Audit set:     [Bug | Small feature | Large feature]
 Files scoped:  X changed files
 
@@ -108,6 +113,7 @@ or
 
 Ticket:        [TICKET-ID] — [Title]
 Issue type:    [Bug | Feature | etc.]
+Jira gate:     [Complete | Nearly Complete | bypassed (--skip-jira)]
 Audit set:     [Bug | Small feature | Large feature]
 Files scoped:  X changed files
 

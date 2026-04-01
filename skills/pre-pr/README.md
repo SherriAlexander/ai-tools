@@ -8,12 +8,18 @@ Run a gated, ticket-aware sequence of code quality audits before submitting a PR
 /pre-pr PROJ-123
 ```
 
+To bypass the `audit-jira` completeness gate (e.g. when the audit result is unreliable but requirements are confirmed met):
+
+```
+/pre-pr PROJ-123 --skip-jira
+```
+
 ## What it does
 
 | Phase | What happens |
 |-------|--------------|
 | 0. Scope | Detects changed files via `git diff` — all audits run against these files only |
-| 1. Gate | Runs `audit-jira` — stops if ticket requirements are incomplete |
+| 1. Gate | Runs `audit-jira` — stops if ticket requirements are incomplete (skipped with `--skip-jira`) |
 | 2. Classify | Detects ticket type and size to select the right audit set |
 | 3. Audit | Runs selected audits in parallel, scoped to changed files |
 | 4. Report | Consolidates findings with a `✅ Ready` or `⚠️ N issues` verdict |
