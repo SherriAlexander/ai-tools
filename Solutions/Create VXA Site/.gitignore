@@ -16,5 +16,6 @@ screenshots/*
 !screenshots/.gitkeep
 scripts/archive/*
 !scripts/archive/.gitkeep
-Site URLs/*
-!Site URLs/.gitkeep
+
+# Ignore entirely (local use only)
+Site URLs/
