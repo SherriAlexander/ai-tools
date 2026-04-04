@@ -22,17 +22,21 @@
         Set-StrictMode -Version Latest
         $ErrorActionPreference = "Stop"
 
-        if (-not $ApiKey) {
-            $ApiKey = (Get-Content (Join-Path $PSScriptRoot "..\\.sitecore\\user.json") | ConvertFrom-Json).endpoints.xmCloud.accessToken
-        }
-
         . (Join-Path $PSScriptRoot "Shared-SitecoreHelpers.ps1")
+
+        # Always request a fresh token -- CM tokens expire in 15 minutes
+        if (-not $ApiKey) {
+            $ApiKey = Get-SitecoreToken -UserJsonPath (Join-Path $PSScriptRoot "..\\.sitecore\\user.json")
+        }
 
         $uri  = "$CmUrl/sitecore/api/authoring/graphql/v1"
         $hdrs = @{ "Authorization" = "Bearer $ApiKey"; "Content-Type" = "application/json" }
 
 .NOTES
     Functions defined here:
+        Get-SitecoreToken       - Request a fresh OAuth token via client credentials (CM or API scope).
+                                  Call ONCE at the top of every script; assign result to $ApiKey.
+                                  Avoids stale-token failures on long-running scripts (CM token = 15 min).
         Invoke-Gql              - Execute a GraphQL query or mutation
         Get-SitecoreItemId      - Resolve item GUID from a content path
         Get-OrCreate-SitecoreItem - Create item if absent; return itemId either way
@@ -45,6 +49,10 @@
                                 - Delete children of a parent item whose names are NOT in a
                                   given keep-list. Call after building a Multi Promo card list
                                   to remove stale cards from previous runs.
+        Add-RenderingToPageLayout
+                                - Non-destructively append one rendering to a page's
+                                  __Final Renderings XML (reads, appends, writes back).
+                                  Use for headless-header and headless-footer placements.
 
     Performance notes:
         Pass -Fields to Get-OrCreate-SitecoreItem to save 1 GQL call per NEW item.
@@ -214,4 +222,107 @@ function Remove-OrphanedSitecoreChildren {
             }
         }
     }
+}
+
+function Get-SitecoreToken {
+    # Request a fresh OAuth access token via client credentials flow.
+    # Always call this at the top of every script instead of reading accessToken
+    # directly from user.json -- the stored token expires in 15 minutes and will
+    # cause mid-script failures on long runs.
+    #
+    # Usage:
+    #   . (Join-Path $PSScriptRoot "Shared-SitecoreHelpers.ps1")
+    #   $ApiKey = Get-SitecoreToken -UserJsonPath (Join-Path $PSScriptRoot "..\\.sitecore\\user.json")
+    #
+    # Scope:
+    #   'cm'  -- Authoring GraphQL endpoint (default). Audience = $ep.audience. Expires: 15 min.
+    #   'api' -- Pages / Sites REST API.  Audience = https://api.sitecorecloud.io. Expires: 24 hr.
+    param(
+        [string]$UserJsonPath = ".sitecore/user.json",
+        [ValidateSet('cm','api')]
+        [string]$Scope = 'cm'
+    )
+    $ep = (Get-Content $UserJsonPath -Raw | ConvertFrom-Json).endpoints.xmCloud
+
+    $audience = if ($Scope -eq 'cm') { $ep.audience } else { 'https://api.sitecorecloud.io' }
+
+    $body = "client_id=$([uri]::EscapeDataString($ep.clientId))" +
+            "&client_secret=$([uri]::EscapeDataString($ep.clientSecret))" +
+            "&audience=$([uri]::EscapeDataString($audience))" +
+            "&grant_type=client_credentials"
+
+    $result = Invoke-RestMethod -Method POST `
+        -Uri "$($ep.authority)/oauth/token" `
+        -ContentType 'application/x-www-form-urlencoded' `
+        -Body $body
+
+    Write-Host "  Token refreshed (scope=$Scope, expires_in=$($result.expires_in)s)" -ForegroundColor DarkGray
+    return $result.access_token
+}
+
+function Add-RenderingToPageLayout {
+    # Non-destructively appends one rendering to a page's __Final Renderings XML.
+    # Reads the existing layout, appends the <r> element before </d>, writes back.
+    # Safe to call on re-runs: checks if the placeholder is already populated and
+    # skips if so (idempotent).
+    #
+    # Use for headless-header and headless-footer placements only.
+    # Content renderings in headless-main should be written as a full layout block.
+    #
+    # Usage:
+    #   Add-RenderingToPageLayout `
+    #       -PagePath    "/sitecore/content/dev-demos/standard/Home" `
+    #       -PageId      "9dc3828e91a74e5da4fde622ea089d54" `
+    #       -RenderingId "{68B9AC48-0D6B-4F9C-8C3C-1C5566ADC671}" `
+    #       -Placeholder "headless-footer" `
+    #       -DatasourceId "162d81b0922344199acd48c6ff43cb38" `
+    #       -Par         "footerNavColorScheme=dark&amp;footerSubnavColorScheme=dark"
+    #
+    # IMPORTANT: DatasourceId must be the explicit item GUID (N format).
+    # The DatasourceLocation query on the rendering definition is UI-only
+    # and does NOT resolve at render time in scripted layouts.
+    param(
+        [string]$PagePath,
+        [string]$PageId,
+        [string]$RenderingId,     # braced GUID: {68B9AC48-...}
+        [string]$Placeholder,     # e.g. "headless-footer" (no leading slash)
+        [string]$DatasourceId,    # N-format GUID of datasource item
+        [string]$Par = ""
+    )
+    Write-Host "  Checking $Placeholder on $PagePath..." -ForegroundColor DarkGray
+
+    $q    = "{ item(where:{database:`"master`",path:`"$PagePath`"}){ field(name:`"__Final Renderings`"){value} } }"
+    $data = Invoke-Gql -Query $q
+    $currentXml = if ($data -and $data.item -and $data.item.field) { $data.item.field.value } else { $null }
+
+    if (-not $currentXml) {
+        Write-Warning "  Could not read __Final Renderings for $PagePath -- skipping layout patch"
+        return
+    }
+
+    # Idempotency: skip if placeholder already occupied
+    if ($currentXml -match "ph=`"/$Placeholder`"" -or $currentXml -match "s:ph=`"/$Placeholder`"") {
+        Write-Host "  = $Placeholder already has a rendering -- skipping" -ForegroundColor DarkGray
+        return
+    }
+
+    if ($WhatIf) {
+        Write-Host "[WHATIF] Would add $RenderingId to /$Placeholder on $PagePath"
+        return
+    }
+
+    $dsAttr = if ($DatasourceId) {
+        $braced = "{$([guid]::new($DatasourceId).ToString().ToUpper())}"
+        " s:ds=`"$braced`""
+    } else { "" }
+
+    $uid       = New-LayoutGuid
+    $newR      = "<r uid=`"$uid`"$dsAttr s:id=`"$RenderingId`" s:ph=`"/$Placeholder`" s:par=`"$Par`" />"
+    $updated   = $currentXml -replace '</d>\s*</r>', "$newR</d></r>"
+    if ($updated -eq $currentXml) { $updated = $currentXml -replace '</d>', "$newR</d>" }
+
+    Set-SitecoreFields -ItemId $PageId -Fields @(
+        [ordered]@{ name = "__Final Renderings"; value = $updated }
+    )
+    Write-Host "  + Added /$Placeholder rendering on $PagePath" -ForegroundColor Green
 }

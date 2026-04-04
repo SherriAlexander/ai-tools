@@ -33,7 +33,7 @@ Active site build: Velir.com → `dev-demos/standard` XM Cloud instance.
 |---|---|---|---|---|---|---|---|
 | Home | `.../Home` | `9dc3828e-91a7-4e5d-a4fd-e622ea089d54` | n/a | 7 | 22 | `Build-VelirPocPage.ps1` (archived) | ✅ Live |
 | Who We Are | `.../Home/who-we-are` | `8a07b286-5dd1-4ba0-800b-6c430ecaa6ec` | — | 8 | 20 | `Build-WhoWeArePage.ps1` (archived) | ✅ Live |
-| What We Do | `.../Home/what-we-do` | `e2bf2f141a3340cc983a4f3b736e19ab` | `eb07d540b409452fb890d063f9877394` | 8 | 22 | `Build-WhatWeDoPage.ps1` | ✅ Live |
+| What We Do | `.../Home/what-we-do` | `de056beee64f443e937afc2585b6914f` | `eb07d540b409452fb890d063f9877394` | 8 | 22 | `Build-WhatWeDoPage.ps1` | ✅ Live |
 | Work | `.../Home/work` | `c4740980-0a10-4b9c-bf95-1339cc4f3f88` | `500aa276-14fa-4aa6-8753-c0469c33c7b3` | 4 | 8 | `Build-WorkPage.ps1` | ✅ Live |
 
 ---

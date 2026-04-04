@@ -784,6 +784,11 @@ No datasource. Global JS plugin. Shows when page height > 2× viewport; triggers
 **Column Link (Managed Item):** `link` (General Link)  
 **Utility Navigation (Managed Item):** `utilityLink` (General Link)
 
+> **Field storage notes (confirmed 2026-04-04):**
+> - `socialLinks` is a **Multilist field** stored as pipe-delimited braced GUIDs: `{GUID1}|{GUID2}|{GUID3}`. Build scripts must compose this string manually — it is NOT a comma-separated list.
+> - `socialIcon` on each Social Link item is a **plain string enum** (not a GUID or Droplink reference). Valid values: `linkedin`, `instagram`, `twitter`, `facebook`, `youtube`.
+> - Global Footer Root and its Social Links folder live at `{site}/Data/` (site-root Data folder), NOT under per-page Data subfolders.
+
 **Individual theming (VSCPD-390 — Awaiting UAT Approval):**
 
 | Display Name | Machine Name |

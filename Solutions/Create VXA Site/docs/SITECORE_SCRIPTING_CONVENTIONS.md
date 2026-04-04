@@ -458,6 +458,59 @@ Set-SitecoreFields -ItemId $targetPageId -Fields @(
 
 ---
 
+## Global Navigation Layout Patterns
+
+### `headless-header` and `headless-footer` are static placeholders, not SXA partial designs
+
+`headless-header` and `headless-footer` are hardcoded in `Layout.tsx` as fixed placeholder slots — they are NOT SXA partial designs and do NOT use the SXA partial design system. Key implications:
+
+- Each accepts exactly one rendering (Global Header and Global Footer respectively).
+- They are added via `__Final Renderings` patch (PowerShell `Add-RenderingToPageLayout`), NOT via `add_component_on_page` (MCP). The MCP Agent API has no mechanism for static placeholders.
+- Renderings in these slots use **rendering-specific params only** — no `DynamicPlaceholderId`, no `GridParameters`. Example footer `s:par`: `footerNavColorScheme=dark&amp;footerSubnavColorScheme=dark`
+- The `headless-footer` and `headless-header` placeholders are **shared across all pages** via the layout template — the rendering must be added to each page's `__Final Renderings` individually. There is no site-wide global partial configuration available via scripting.
+
+### Datasource must be explicit `{braced-GUID}` — `DatasourceLocation` query is UI-only
+
+The `DatasourceLocation` query on a rendering definition (e.g., `query:$site/*[@@name='Data']/*[@@templatename='VXA Global Footer Root']`) is **Experience Editor UI only**. It tells the editor where to look for datasource candidates. It does NOT resolve at render time when layout XML is written directly via scripting.
+
+When patching `__Final Renderings` via PowerShell, always set `s:ds` to the **explicit `{braced-GUID}`** of the datasource item:
+
+```xml
+<r uid="{...}" s:ds="{162D81B0-9223-4419-9ACD-48C6FF43CB38}" s:id="{68B9AC48-0D6B-4F9C-8C3C-1C5566ADC671}"
+   s:par="footerNavColorScheme=dark&amp;footerSubnavColorScheme=dark"
+   s:ph="headless-footer" />
+```
+
+**Datasource location:** Global nav datasources live at `{site}/Data/` (the site-root Data folder), NOT under per-page `Data/` folders. Use `local:/Data/...` paths for per-page content; use absolute GUIDs for site-level shared datasources like the footer.
+
+### `Add-RenderingToPageLayout` — append pattern for `__Final Renderings`
+
+This pattern non-destructively adds a rendering to an existing page layout without overwriting its content renderings. Confirmed working on all 4 Velir POC pages (2026-04-04).
+
+```powershell
+function Add-RenderingToPageLayout {
+    param(
+        [string]$PagePath,       # e.g. "/sitecore/content/Velir/Velir/Home"
+        [string]$RenderingXml    # single <r ... /> string to append
+    )
+    # 1. Read current __Final Renderings
+    $q = '{ item(where:{database:"master",path:"' + $PagePath + '"}) { field(name:"__Final Renderings") { value } } }'
+    $existing = (Invoke-Gql $q).data.item.field.value
+
+    # 2. Append before the closing </d>
+    $updated = $existing -replace '</d>', "$RenderingXml`n</d>"
+
+    # 3. Write back
+    Set-SitecoreFields -ItemId (Get-SitecoreItemId -Path $PagePath) -Fields @(
+        [ordered]@{ name = "__Final Renderings"; value = $updated }
+    )
+}
+```
+
+Invoke once per page. The function is defined in `Build-GlobalFooter.ps1` and should be promoted to `Shared-SitecoreHelpers.ps1` for future reuse.
+
+---
+
 ## `updateItem` / `Set-SitecoreFields` — All-or-Nothing Behavior
 
 The `updateItem` GraphQL mutation processes the fields array as a single unit. If **any** field name in the array is invalid (e.g. uses the wrong machine name), the **entire mutation fails** — all fields, including valid ones, go unset.

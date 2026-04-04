@@ -66,6 +66,9 @@ Build a tool that ingests a potential client's existing website and automaticall
 | 2026-04-03 | Card grid scraping rules established | Two content/planning rules added to `SITECORE_SCRIPTING_CONVENTIONS.md`: (1) Always fetch `og:image` from each card's individual page — never use images scraped from the listing page (which may contain carousel/hero images). (2) Visually verify the scraped slug list against a Playwright screenshot before writing cards — naive regex scrape of a listing page captures carousel slide slugs mixed in with grid slugs. |
 | 2026-04-03 | `Remove-OrphanedSitecoreChildren` added to Shared helpers | New function in `Shared-SitecoreHelpers.ps1`. Takes `-ParentPath` and `-KeepNames`. Deletes any children of the parent not in the keep-list. Must be called after every Multi Promo card loop in build scripts — failing to do so leaves stale cards from previous runs visible on the rendered page. `Build-WorkPage.ps1` already calls it. All future page scripts with Multi Promo cards must call it too. |
 | 2026-04-03 | `sitecore-pitfalls.md` rules migrated to project docs | All rules migrated to project docs: link field rules, `__Final Renderings` sharing, media upload rules, screenshot version rules → `SITECORE_SCRIPTING_CONVENTIONS.md`; browser login polling loop → `sitecore-token-refresh/SKILL.md`. Project is now self-contained — no agent-level memory dependency. |
+| 2026-04-04 | Global Footer built and confirmed working via preview | `Build-GlobalFooter.ps1` creates the complete footer content tree (Global Footer Root, Column Nav, Social Links, logo) and appends the rendering to all page layouts via `Add-RenderingToPageLayout`. All 4 POC pages confirmed rendering the footer. Global Header still pending. |
+| 2026-04-04 | Page GUIDs must be queried live — hardcoded IDs go stale | When a page item is recreated (deleted + rebuilt), its GUID changes. Build scripts that hardcode page GUIDs from a prior session will silently fail with "item not found." Lesson: always query page IDs from the live content tree at script start rather than assuming docs are current. Triggered by What We Do page being recreated 2026-04-03. |
+| 2026-04-04 | `headless-header`/`headless-footer` are static placeholders — use explicit GUID `s:ds`, no DPID | These are hardcoded in `Layout.tsx`, not SXA partial designs. Rendered via `__Final Renderings` patch only (not MCP `add_component_on_page`). `s:ds` must be the explicit `{braced-GUID}` of the datasource — `DatasourceLocation` query is UI-only and does not resolve at render time. No `DynamicPlaceholderId` or `GridParameters` in `s:par`. See `SITECORE_SCRIPTING_CONVENTIONS.md` → Global Navigation Layout Patterns. |
 ---
 
 ## Open Questions
@@ -76,6 +79,21 @@ Build a tool that ingests a potential client's existing website and automaticall
 - What does the SitecoreAI toolkit currently provide? (Components, themes, content models?)
 - Where does the generated POC live? (Deployed automatically, or handed off as a code package?)
 - How much human review/cleanup is expected before showing a client?
+
+---
+
+## Skill / Improvement Backlog
+
+Items identified but not yet acted on. Pick these up at the start of the relevant session.
+
+| Priority | Item | Added | Notes |
+|----------|------|-------|-------|
+| High | Promote `Add-RenderingToPageLayout` and `Get-SitecoreToken` from `Build-GlobalFooter.ps1` into `Shared-SitecoreHelpers.ps1` so all future scripts (header, etc.) use canonical versions | 2026-04-04 | ✅ Done — both functions added to Shared-SitecoreHelpers.ps1 on 2026-04-04 |
+| High | Update `_Template-BuildPage.ps1` to use `Get-SitecoreToken` instead of reading stale `accessToken` from user.json | 2026-04-04 | ✅ Done — template updated on 2026-04-04 |
+| High | Update existing page build scripts (`Build-WhoWeArePage.ps1`, `Build-WhatWeDoPage.ps1`, `Build-WorkPage.ps1`) to use `Get-SitecoreToken` | 2026-04-04 | Not yet done — stale token reads still in each script |
+| High | Create `poc-build-global-nav` skill | 2026-04-04 | Codifies full header + footer build process: research nav structure from source site → scrape content → run `Build-GlobalFooter.ps1` → run `Build-GlobalHeader.ps1` → publish → verify with correct item version. Write after header is proven working. |
+| Medium | Create `poc-verify-page` skill | 2026-04-04 | Standardizes the page verification flow: query item versions → screenshot correct version → decode + view bottom of page → confirm all sections + header/footer render. Prevents recurrence of version-mismatch false-negative diagnosis. |
+| Medium | `$pages` hash in `Build-GlobalFooter.ps1` hardcodes page GUIDs | 2026-04-04 | Replace with dynamic `Get-SitecoreItemId` calls at script start. Pattern: `$pages = @{}; foreach ($path in $pagePaths) { $pages[$path] = Get-SitecoreItemId -Path $path }`. |
 
 ---
 

@@ -33,11 +33,12 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-if (-not $ApiKey) {
-    $ApiKey = (Get-Content (Join-Path $PSScriptRoot "..\\.sitecore\\user.json") | ConvertFrom-Json).endpoints.xmCloud.accessToken
-}
-
 . (Join-Path $PSScriptRoot "Shared-SitecoreHelpers.ps1")
+
+# Always request a fresh token -- CM tokens expire in 15 minutes
+if (-not $ApiKey) {
+    $ApiKey = Get-SitecoreToken -UserJsonPath (Join-Path $PSScriptRoot "..\\.sitecore\\user.json")
+}
 
 $uri  = "$CmUrl/sitecore/api/authoring/graphql/v1"
 $hdrs = @{ "Authorization" = "Bearer $ApiKey"; "Content-Type" = "application/json" }
