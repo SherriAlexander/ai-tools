@@ -58,7 +58,13 @@ Environment: `standard` site / SitecoreAI (Velir Studios org)
 - `delete_content` — takes `itemId`. Deletes across all language versions. **Proven live — returns `{success:true, deletedId}`.** ✅
 
 ### Page Screenshots & Preview
-- `get_page_screenshot` — **✅ PROVEN**. Returns base64-encoded PNG in `screenshot_base64` field. Other response fields: `type`, `fullPage`, `encoding`, `timestamp`. Requires `version` (integer). Width/height configurable. ⚠️ **Always check which item version you are working in and pass that version number.** During the Velir POC build we created item version 2 and worked in that version — so screenshots required `version: 2`. If you're on version 1 (never created a new version), use `version: 1`. If you have created additional versions, use the correct current working version. Query item version via Authoring GraphQL before issuing screenshots if unsure.
+- `get_page_screenshot` — **✅ PROVEN**. Returns base64-encoded PNG in `screenshot_base64` field. Other response fields: `type`, `fullPage`, `encoding`, `timestamp`. Requires `version` (integer). Width/height configurable.
+
+  > ⛔ **MANDATORY: Always query the current item version before screenshotting.** Do not assume version 1. The Velir POC Home page is version 2 — screenshotting with `version: 1` shows stale content and caused a full false-negative diagnosis session on 2026-04-04. Run this query and use the highest number returned:
+  > ```graphql
+  > { item(where: { database: "master", path: "/sitecore/content/..." }) { versions { number } } }
+  > ```
+  > This is NOT optional. Skipping it wastes entire debugging sessions.
 - **Important:** Screenshots render from the **published** version of the page, not master. Changes written via Authoring GraphQL (`__Final Renderings` on master) will NOT appear in screenshots until the page is published. Plan verification flows around publish state, not authoring state.
 - Decoded PNG is ~1.2MB for a full-page viewport screenshot at default width.
 - `get_page_preview_url` — returns the preview URL for a page.
