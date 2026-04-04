@@ -1,0 +1,20 @@
+# may contain OAuth secrets, do not commit
+.sitecore/user.json
+
+# package reference cache
+.sitecore/package-cache
+
+# Ephemeral index caches used by serialization, do not commit
+.scindex
+
+# Don't commit packages
+*.itempackage
+*.sicpackage
+
+# Keep folders but ignore their contents (generated/local artifacts)
+screenshots/*
+!screenshots/.gitkeep
+scripts/archive/*
+!scripts/archive/.gitkeep
+Site URLs/*
+!Site URLs/.gitkeep
