@@ -1,0 +1,31 @@
+# Working rules for this repository
+
+- Use the least expensive model that can reliably complete the task.
+- Escalate to a stronger reasoning model for ambiguous architecture, multi-file refactors, tricky debugging, or high-risk changes.
+- For non-trivial work, state a short plan before editing.
+- Read relevant files and existing patterns before making changes.
+- Prefer minimal diffs; do not refactor unrelated code unless asked.
+- Never invent APIs, config, env vars, or dependencies; verify from the repo first.
+- If behavior changes, update or add tests nearby. If not, explain why.
+- If decisions, workflows, setup, or conventions change, proactively update the relevant markdown files in the same task.
+- Update the nearest source-of-truth doc, ADR, README, runbook, or changelog rather than duplicating guidance.
+- Before risky actions (migrations, auth, deletes, large renames, dependency upgrades), explain impact and ask for confirmation.
+- At the start of a new session, always review all markdown files in the workspace to restore context. This includes `docs/CONTEXT.md` and the active site context file in `docs/sites/` (e.g. `docs/sites/velir.md`). The site context file contains environment constants, completed pages, and Playwright/Node paths needed for script execution.
+- Before running any Sitecore PowerShell script, always attempt a token refresh first (follow the sitecore-token-refresh skill). Do not wait to be asked — treat this as a mandatory pre-step for all Sitecore script execution.
+- Use Marketer MCP (`mcp_sitecore-mark_*`) as the primary tool for all content component operations (create, read, update, add to page). Use PowerShell + Authoring GraphQL only for containers and full layout resets. See `MARKETER_MCP_KNOWLEDGE_BASE.md` for the hybrid pipeline model.
+- Before adding or inspecting a page section, use the `sitecore-layout-inspect` skill to get the current live layout state.
+- When adding a new section to a POC page, follow the `poc-add-section` skill.
+- When uploading images or logos to the media library, follow the `poc-upload-images` skill.
+- Whenever progress is made, a decision is reached, or something new is learned, proactively document it in the appropriate markdown file — without waiting to be asked.
+- All POC page content (text, client names, stats, section structure, component selection) must be sourced from a live fetch of the target URL. Never invent clients, testimonials, statistics, descriptions, or page sections. Before authoring or updating any content block, fetch the source page and cite it.
+- All component images must also be sourced from the live site. For every component that has an image field (Promo, Multi Promo Item, Hero, etc.), fetch the actual image from the source page, upload it to the Sitecore media library, and set the `mediaid` on the field. Do not leave image fields blank if the source page has an image. Follow the `poc-upload-images` skill — it covers the full GraphQL + `curl.exe` upload pattern. Note: `mcp_sitecore-mark_upload_asset` does NOT work (filesystem not available in MCP runtime).
+- When encountering an unfamiliar Sitecore/SitecoreAI concept (variants, personalization, placeholder rules, layout XML attributes, Content SDK behavior, rendering parameters, etc.), query the Sitecore Docs MCP (`mcp_sitecore-docu_search_sitecore_knowledge_sources`) before attempting to infer or guess. Document findings in the appropriate markdown file afterward.
+- When a component needs a non-default layout (image-right, animated, etc.), follow the `sitecore-apply-variant` skill. Check `VXA_COMPONENT_SPECS.md` → Headless Variants Reference for all available variant GUIDs before querying the live site.
+- After running `Build-VelirPocPage.ps1` or making content changes via MCP, publish the page to Experience Edge by following the `poc-publish-page` skill. Screenshots via MCP render from the published state — publish first.
+- When selecting which VXA component to use for a section, always consult `docs/VXA_COMPONENT_SPECS.md` → Component Selection Guide (Section 0) first. Do not guess or reason from general CMS knowledge — use the decision tree.
+- When building a POC page for a new client site, use the `.github/prompts/poc-generator.prompt.md` agent workflow. Run it in agent mode: it handles analysis, media upload, layout XML generation, script generation, execution, and verification in sequence.
+- **Playwright prerequisite:** Node v24 and Playwright 1.59.1 are installed on this machine. Chromium is downloaded. No setup is needed before taking screenshots.
+- Always track the Sitecore item version you are working in at the start of a session. Pass the correct version number to `get_page_screenshot`. Do not assume version 1 or version 2 — query the item to confirm.
+- **`scripts/archive/` is off-limits.** Never read from, copy from, or reference files in the archive folder. All reusable knowledge from archived scripts must already be encoded in `docs/` files or `scripts/_Template-BuildPage.ps1`. If something useful is missing from those files, update them — do not go to the archive.
+- **Phase 1 of the poc-generator workflow is a mandatory confirmation gate.** After presenting the section plan table, you MUST STOP and wait for the user to approve the plan before beginning Phase 2. Never proceed to media upload, layout XML, or script generation without explicit user confirmation of the Phase 1 plan. See `poc-generator.prompt.md` for the required table format.
+- **Terminal output truncation is not a failure signal.** When running a `run_in_terminal` command, the tool can return a partial or empty output while the command is still executing (or already completed). Do not interpret a truncated output as command failure. Always confirm result by checking explicit `Write-Host` markers or variable values in a follow-up call. Never retry a mutation because the output was short — that creates duplicate items.
