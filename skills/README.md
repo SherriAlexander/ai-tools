@@ -26,6 +26,7 @@ Have a new skill to share?  Make a pull request!
 - `/refine-idea`: A thinking partner, to help you refine an incomplete idea into a clear spec.
 - `/test`: Detect the test framework, run the test suite, and fix any failures.
 - `/tests-new`: Identify and add tests for recent code changes.
+- `/session-retrospective`: Review the session for errors, workarounds, and new learnings. Propose targeted additions to the project's knowledge base docs — then write after user confirmation.
 - `/update-changelog`: Update CHANGELOG.md with changes since the last release.
 
 
