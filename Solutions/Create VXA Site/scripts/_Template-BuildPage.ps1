@@ -40,9 +40,6 @@ if (-not $ApiKey) {
     $ApiKey = Get-SitecoreToken -UserJsonPath (Join-Path $PSScriptRoot "..\\.sitecore\\user.json")
 }
 
-$uri  = "$CmUrl/sitecore/api/authoring/graphql/v1"
-$hdrs = @{ "Authorization" = "Bearer $ApiKey"; "Content-Type" = "application/json" }
-
 # ---------------------------------------------------------------------------
 # Target page -- ID resolved dynamically at runtime (Step 1)
 # ---------------------------------------------------------------------------
@@ -194,8 +191,8 @@ $dataId = Get-OrCreate-SitecoreItem -Path $dataPath -Name "Data" -TemplateId $tF
 # ===========================================================================
 Write-Host "`nStep N: Applying layout to page..." -ForegroundColor Cyan
 
-# TODO: change 1..N to the actual total DPID count
-$uid = @{}; 1..N | ForEach-Object { $uid[$_] = New-LayoutGuid }
+# TODO: replace 10 with the actual total DPID count for this page
+$uid = @{}; 1..10 | ForEach-Object { $uid[$_] = New-LayoutGuid }
 
 $layoutXml = "<r xmlns:p=`"p`" xmlns:s=`"s`" p:p=`"1`"><d id=`"$deviceId`">" +
 
