@@ -57,6 +57,30 @@ Scan the conversation history and terminal output for:
 - One-off typos or copy-paste mistakes with no generalizable lesson
 - Things that only apply to a single run and won't recur
 
+### Also scan for: Repeated Tasks (Skill Candidates)
+
+Look for sequences of steps that were performed manually and are likely to recur:
+
+| Signal | Examples |
+|--------|----------|
+| **Multi-step ritual** | Same sequence of 3+ commands run at the start or end of every session |
+| **Scripted workaround** | A PowerShell/bash script written mid-session to automate something tedious |
+| **Lookup-then-act pattern** | Fetching an ID/token/path before every operation of the same type |
+| **Repeated tool chain** | Same MCP calls made in the same order more than once |
+| **"I always have to..."** | Any phrase like "as usual", "like we did last time", "same as before" |
+
+### Also scan for: Optimization Opportunities
+
+Look for places where the workflow was slower or riskier than it needed to be:
+
+| Signal | Examples |
+|--------|----------|
+| **Trial-and-error sizing** | Multiple iterations tweaking a value before landing on the right one |
+| **Missing guard / dry-run** | A destructive or slow operation ran without a preview step |
+| **Auth friction** | Token expired mid-task; had to re-run `dotnet sitecore cloud login` |
+| **Manual step that could be automated** | Copy-pasting an ID from one output to the next command |
+| **Context loss between sessions** | Work had to be reconstructed from memory or memory files at session start |
+
 ---
 
 ## Step 2 — Build the Proposal Table
@@ -87,17 +111,41 @@ If the right doc doesn't exist yet, note that in the Action column.
 
 ---
 
+## Step 2b — Forward-Looking Recommendations
+
+Using the "Repeated Tasks" and "Optimization Opportunities" signals from Step 1, build a second table:
+
+```
+| # | Observation | Type | Recommendation | Effort |
+|---|-------------|------|---------------|--------|
+| 1 | Variant creation requires 5 manual steps each time | Repeated task | Codify into `add-sitecore-variant` skill or a reusable PS script | Low |
+| 2 | Auth token expires mid-session with no warning | Optimization | Add token-expiry check at the top of every API script | Low |
+| 3 | ... | | | |
+```
+
+**Type values:** `Repeated task`, `Optimization`, `Missing guard`, `Auth friction`, `Context loss`
+
+**Effort values:** `Low` (< 30 min), `Medium` (30 min – 2 h), `High` (> 2 h)
+
+This table is proposals only — do not create skills or scripts yet. The user decides which (if any) to act on.
+
+---
+
 ## Step 3 — Present and STOP
 
-Post the proposal table to the user. **Do not write anything yet.**
+Post **both tables** to the user:
+1. **Knowledge-base proposals** (Step 2) — doc entries to write
+2. **Forward-looking recommendations** (Step 2b) — skills/optimizations to consider
+
+**Do not write anything yet.**
 
 Also state:
-- How many items were found
+- How many items were found across both tables
 - Which docs would be modified or created
 - Any items you are uncertain about (flag separately — do not include in the write batch without confirmation)
 
 Then stop and wait for the user to:
-- Approve all → proceed to Step 4
+- Approve all → proceed to Step 4 (for doc writes) and note any skill/optimization items for a follow-up task
 - Approve some → restate the approved subset, proceed
 - Edit wording → incorporate edits, proceed
 - Reject → skip and close
