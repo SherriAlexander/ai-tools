@@ -24,7 +24,7 @@ For automated callers (Husky, git hooks) — auto-selects Quick depth without pr
 
 | Phase | What happens |
 |-------|--------------|
-| 0. Scope | Detects changed files via `git diff` — all audits run against these files only |
+| 0. Scope | Prompts for a base branch name under `origin/` (default: `main`), then detects changed files via `git diff` — all audits run against these files only |
 | 1. Gate | Runs `audit-jira` — stops if ticket requirements are incomplete (skipped with `--skip-jira`) |
 | 2. Select depth | Prompts for Quick / Medium / In-depth / Custom (auto-selects Quick if `--hook`) |
 | 3. Audit | Runs selected audits in parallel, scoped to changed files |
@@ -41,7 +41,7 @@ For automated callers (Husky, git hooks) — auto-selects Quick depth without pr
 
 ## Why scoped to changed files?
 
-Running audits against the entire codebase for a targeted PR creates noise and wastes tokens. By scoping to `git diff`, each audit focuses only on what changed — results are faster and more relevant.
+Running audits against the entire codebase for a targeted PR creates noise and wastes tokens. By scoping to `git diff origin/<branch>...HEAD` (or a re-scoped variant), each audit focuses only on what changed — results are faster and more relevant.
 
 ## Related skills
 

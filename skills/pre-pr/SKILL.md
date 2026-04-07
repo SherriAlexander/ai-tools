@@ -20,13 +20,22 @@ An optional `--hook` flag signals that the skill is being invoked by an automate
 
 ## Phase 0: Scope Changed Files
 
+Ask the user which base branch name to diff against under `origin`.
+
+Prompt:
+> Enter a base branch name for the initial diff under `origin/` (default: `main`).
+>
+> Examples: `main`, `develop`, `support`, `project-branchname`
+
+If the user presses enter, use `main`.
+
 Run the following to identify files changed in this branch:
 
 ```bash
-git diff --name-only origin/main...HEAD
+git diff --name-only origin/<base-branch>...HEAD
 ```
 
-If `origin/main` fails, try in order: `main...HEAD`, `master...HEAD`, `develop...HEAD`. Use whichever succeeds first.
+If `origin/<base-branch>` fails, try in order: `origin/main...HEAD`, `origin/master...HEAD`, `origin/develop...HEAD`. Use whichever succeeds first and record the one that worked as `resolved-base-branch`.
 
 If git is unavailable or returns no files:
 - **Warn the user**: "No changed files detected — audits will run against the full codebase. This costs significantly more tokens."
@@ -55,7 +64,7 @@ Then ask the user how to proceed:
 > **How would you like to scope the audits?**
 > - **Proceed with all N files** — continue with the detected list
 > - **Scope to recent commits** — narrow to files changed in a specific commit range
-> - **Change base branch** — diff against a different branch or ref
+> - **Change base branch** — diff against a different branch name under `origin/`
 > - **Specify files manually** — enter paths or glob patterns
 
 **If "Scope to recent commits":**
@@ -74,17 +83,17 @@ git diff --name-only <sha>...HEAD
 Replace the file list with the result. Record scope as `commit range <sha>...HEAD`.
 
 **If "Change base branch":**
-Ask the user for a ref (e.g. `origin/develop`). Run:
+Ask the user for a branch name under `origin/` (e.g. `develop`, `support`, `project-branchname`). Run:
 ```bash
-git diff --name-only <ref>...HEAD
+git diff --name-only origin/<branch>...HEAD
 ```
-Replace the file list with the result. Record scope as `<ref>...HEAD`.
+Replace the file list with the result. Record scope as `origin/<branch>...HEAD`.
 
 **If "Specify files manually":**
 Ask the user for comma-separated paths or glob patterns. Replace the file list with the result. Record scope as `manually specified`.
 
 **If "Proceed with all N files":**
-Record scope as `origin/main...HEAD` (or whichever ref succeeded in Phase 0).
+Record scope as `origin/<resolved-base-branch>...HEAD`.
 
 After any re-scoping, confirm the final file count:
 > Scope confirmed: **N files**. Proceeding with audits.
@@ -191,8 +200,8 @@ Critical: X  |  High: X  |  Medium: X  |  Low: X
 ```
 
 `[scope method]` values:
-- `origin/main...HEAD` — default
+- `origin/<resolved-base-branch>...HEAD` — initial selected/resolved diff base
 - `commit range <sha>...HEAD` — after commit selection
-- `<ref>...HEAD` — after base branch change
+- `origin/<branch>...HEAD` — after base branch change
 - `manually specified` — after manual entry
 - `full codebase (no changed files detected)` — unscoped fallback

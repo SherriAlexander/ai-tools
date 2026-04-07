@@ -32,6 +32,8 @@ Example: `/troubleshoot why the pre-pr skill didn't run in #session`
 
 ### For all scenarios
 - Skill should stay limited to recently changed files.
+- Skill should prompt for a base branch name under `origin/` before file scoping (default `main`).
+- Branch name examples should be shown: `main`, `develop`, `support`, `project-branchname`.
 - The JIRA audit should act as a gate, and other tests should not run if it fails
 - The `--skip-jira` flag should skip the JIRA audit, and the rest of the tests should then run
 - The `--hook` flag should auto-select Quick depth without prompting
@@ -41,6 +43,7 @@ Example: `/troubleshoot why the pre-pr skill didn't run in #session`
 
 Run: `/pre-pr PROJ-123` and select **Quick** (or press Enter for default)
 
+- Should first prompt for base branch name under `origin/` (Enter should use `main`)
 - Should prompt for depth selection
 - After JIRA audit, should only run:
   - `audit-best-practices`
@@ -77,10 +80,22 @@ Run: `/pre-pr PROJ-123` and select **Custom**
 - Should run only the audits the user selects
 - Should not run any audit that was not selected
 
+### Phase 0b: Change base branch (re-scope)
+
+Run: `/pre-pr PROJ-123`
+
+- At the initial scope prompt, enter `main` (or press Enter)
+- When asked "How would you like to scope the audits?", choose **Change base branch**
+- Enter a different branch name under `origin/` (for example: `develop`, `support`, `project-branchname`)
+- Should re-run file scoping using `git diff --name-only origin/<branch>...HEAD`
+- Should confirm scope with updated file count before continuing
+- Remaining phases should continue normally using the re-scoped file list
+
 ### Hook / automated caller
 
 Run: `/pre-pr PROJ-123 --hook`
 
+- Should still prompt for base branch name under `origin/` (Enter should use `main`)
 - Should **not** prompt for depth selection
 - Should automatically use Quick depth
 - After JIRA audit, should only run:
